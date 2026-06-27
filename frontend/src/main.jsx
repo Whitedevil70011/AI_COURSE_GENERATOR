@@ -1,7 +1,11 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Auth0Provider } from '@auth0/auth0-react'
-import App from './App.jsx'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import App from './App'
+import Dashboard from './Pages/Dashboard/page'
+import CreateCourse from './Pages/CreateCourse/CreateCourse'
+import ProtectedRoute from './_components/ProtectedRoute'
 import './index.css'
 
 createRoot(document.getElementById('root')).render(
@@ -10,13 +14,26 @@ createRoot(document.getElementById('root')).render(
       domain={import.meta.env.VITE_AUTH0_DOMAIN}
       clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
       authorizationParams={{
-        redirect_uri: window.location.origin,
+        redirect_uri: `${window.location.origin}/dashboard`,
         audience: import.meta.env.VITE_AUTH0_AUDIENCE
       }}
-      cacheLocation="localstorage"        // ← silent token refresh on page reload
-      useRefreshTokens={true}             // ← persistent sessions
+      cacheLocation="localstorage"
+      useRefreshTokens={true}
     >
-      <App />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<App />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/create-course" element={<CreateCourse />} />
+        </Routes>
+      </BrowserRouter>
     </Auth0Provider>
   </StrictMode>
 )

@@ -1,40 +1,33 @@
 import React from 'react'
+import { Button } from '../components/ui/button'
+import heroImage from '../assets/hero.png'
 
 function Hero() {
   return (
-    <section className="bg-white lg:grid lg:h-screen lg:place-content-center">
-      <div className="mx-auto w-screen max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8 lg:py-32">
-        <div className="mx-auto max-w-prose text-center">
-          <h1 className="text-4xl font-bold text-gray-900 sm:text-5xl">
-            AI Course Generator
-            <br />
-            <strong className="text-violet-600">Custom Learning Paths</strong>
-            <br />
-            Powered by AI
-          </h1>
+<section className="flex justify-center py-12 px-4">
+  <div className="max-w-2xl text-center">
+    <p className="text-violet-600 text-3xl font-bold mb-2">
+      AI Course Generator
+    </p>
 
-          <p className="mt-4 text-base text-pretty text-gray-700 sm:text-lg/relaxed">
-            Unlock personalized education with AI-driven course creation. Tailor your learning journey to fit your unique goals and pace.
-          </p>
+    <h1 className="text-5xl font-extrabold text-black leading-tight mb-6">
+      Custom Learning Paths,
+      <br />
+      Powered by AI
+    </h1>
 
-          <div className="mt-4 flex justify-center gap-4 sm:mt-6">
-            <a
-              className="inline-block rounded border border-violet-600 bg-violet-600 px-5 py-3 font-medium text-white shadow-sm transition-colors hover:bg-violet-700"
-              href="#"
-            >
-              Get Started
-            </a>
+    <p className="max-w-lg mx-auto text-gray-700 text-xl leading-relaxed mb-8">
+      Unlock personalized education with AI-driven course creation.
+      Tailor your learning journey to fit your unique goals and pace.
+    </p>
 
-            <a
-              className="inline-block rounded border border-gray-200 px-5 py-3 font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 hover:text-gray-900"
-              href="#"
-            >
-              Learn More
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
+    <Button
+      className="bg-violet-600 hover:bg-violet-700 text-white px-8 py-2 h-11 rounded-md"
+    >
+      Get Started
+    </Button>
+  </div>
+</section>
   )
 }
 

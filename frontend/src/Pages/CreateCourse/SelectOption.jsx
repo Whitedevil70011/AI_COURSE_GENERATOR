@@ -1,6 +1,14 @@
 import React from "react";
+import { UserInputContext } from "../../Context/userInputcontext";
 
 function SelectOption() {
+  const { userInput, setUserInput } = React.useContext(UserInputContext);
+  const handleOptionChange = (field, value) => {
+    setUserInput((prevInput) => ({
+      ...(prevInput || {}),
+      [field]: value,
+    }));
+  };
   const containerStyle = {
     display: "grid",
     gridTemplateColumns: "repeat(2, 1fr)",
@@ -56,7 +64,8 @@ function SelectOption() {
         <label style={labelStyle}>Difficulty Level</label>
         <select
           style={selectStyle}
-          defaultValue="Beginner"
+          value={userInput?.difficulty || "Beginner"}
+          onChange={(e) => handleOptionChange("difficulty", e.target.value)}
           onFocus={(e) => {
             e.target.style.borderColor = "#7c3aed";
             e.target.style.boxShadow = "0 0 0 3px rgba(124,58,237,0.15)";
@@ -76,7 +85,8 @@ function SelectOption() {
         <label style={labelStyle}>Course Duration</label>
         <select
           style={selectStyle}
-          defaultValue="1 Hour"
+          value={userInput?.duration || "1 Hour"}
+          onChange={(e) => handleOptionChange("duration", e.target.value)}
           onFocus={(e) => {
             e.target.style.borderColor = "#7c3aed";
             e.target.style.boxShadow = "0 0 0 3px rgba(124,58,237,0.15)";
@@ -97,7 +107,8 @@ function SelectOption() {
         <label style={labelStyle}>Add Video</label>
         <select
           style={selectStyle}
-          defaultValue="No"
+          value={userInput?.video || "Yes"}
+          onChange={(e) => handleOptionChange("video", e.target.value)}
           onFocus={(e) => {
             e.target.style.borderColor = "#7c3aed";
             e.target.style.boxShadow = "0 0 0 3px rgba(124,58,237,0.15)";
@@ -116,7 +127,8 @@ function SelectOption() {
         <label style={labelStyle}>No of Chapters</label>
         <select
           style={selectStyle}
-          defaultValue="5"
+          value={userInput?.chapters || "5"}
+          onChange={(e) => handleOptionChange("chapters", e.target.value)}
           onFocus={(e) => {
             e.target.style.borderColor = "#7c3aed";
             e.target.style.boxShadow = "0 0 0 3px rgba(124,58,237,0.15)";

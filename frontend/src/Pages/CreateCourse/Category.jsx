@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import programmingImg from "../../assets/prgrammin.png";
 import studyImg from "../../assets/study.png";
 import designImg from "../../assets/design.png";
 import healthImg from "../../assets/health.png";
+import { UserInputContext } from "../../Context/userInputcontext";
 
 function Category({ onSelect }) {
-  const [selected, setSelected] = useState(null);
+  const { userInput, setUserInput } = useContext(UserInputContext);
+  const selected = userInput?.category;
 
   const cate = [
     { id: 1, name: "Programming", image: programmingImg },
@@ -14,10 +16,19 @@ function Category({ onSelect }) {
     { id: 4, name: "Health", image: healthImg },
   ];
 
-  const handleSelect = (id) => {
-    setSelected(id);
-    if (onSelect) onSelect(id);
-  };
+  // const handleSelect = (id) => {
+  //   setSelected(id);
+  //   if (onSelect) onSelect(id);
+  // };
+  const handleCategory = (category) => {
+    setUserInput((prevInput) => ({
+      ...(prevInput || {}),
+      category: category,
+    }));
+    if (onSelect) onSelect(category);
+
+
+  }
 
   return (
     <div
@@ -30,11 +41,11 @@ function Category({ onSelect }) {
       }}
     >
       {cate.map((item) => {
-        const isSelected = selected === item.id;
+        const isSelected = selected === item.name;
         return (
           <div
             key={item.id}
-            onClick={() => handleSelect(item.id)}
+            onClick={() => handleCategory(item.name)}
             style={{
               display: "flex",
               flexDirection: "column",

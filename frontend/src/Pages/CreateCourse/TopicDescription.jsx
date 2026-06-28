@@ -1,8 +1,24 @@
 import React from "react";
 import { Input } from "../../components/ui/input";
 import { Textarea } from "../../components/ui/textarea";
+import { UserInputContext } from "../../Context/userInputcontext";
 
 function TopicDescription() {
+    const { userInput, setUserInput } = React.useContext(UserInputContext);
+    const handleTopicChange = (field, value) => {
+        setUserInput((prevInput) => ({
+            ...(prevInput || {}),
+            [field]: value,
+        }));
+    };
+
+    const handleDescriptionChange = (field, value) => {
+        setUserInput((prevInput) => ({
+            ...(prevInput || {}),
+            [field]: value,
+        }));
+    };
+
     return (
         <div
             style={{
@@ -23,14 +39,24 @@ function TopicDescription() {
                 <label style={{ fontSize: "14px", fontWeight: 700, color: "#1f2937" }}>
                     Enter your topic
                 </label>
-                <Input placeholder="Topic" />
+                <Input
+                    placeholder="Topic"
+                    value={userInput?.topic || ""}
+                    onChange={(e) => handleTopicChange("topic", e.target.value)}
+                />
             </div>
 
             <div style={{ display: "grid", gap: "8px" }}>
                 <label style={{ fontSize: "14px", fontWeight: 700, color: "#1f2937" }}>
                     Tell us more about what you want to include in the course
                 </label>
-                <Textarea placeholder="Course description" rows={6} />
+
+                <Textarea
+                    placeholder="Course description"
+                    rows={6}
+                    value={userInput?.description || ""}
+                    onChange={(e) => handleDescriptionChange("description", e.target.value)}
+                />
             </div>
         </div>
     )

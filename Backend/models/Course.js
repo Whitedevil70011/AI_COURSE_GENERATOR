@@ -7,9 +7,10 @@ const courseSchema = new mongoose.Schema({
   topic: { type: String },
   difficulty: { type: String },
   duration: { type: String },
-  creator: { type: String, required: true }, // Auth0 sub
+  creator: { type: String, required: true },
   isEnriched: { type: Boolean, default: false },
-  tags: [{ type: String }]
+  tags: [{ type: String }],
+  modules: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Module' }], // 👈 add this
 }, { timestamps: true });
 
 module.exports = mongoose.model('Course', courseSchema);

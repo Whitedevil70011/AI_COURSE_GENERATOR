@@ -1,9 +1,14 @@
-import { getUserInfo } from '../services/auth0Service.js'
+const { getUserInfo } = require('../services/auth0Service');
 
-export const getUserProfile = async (req, res) => {
+const getUserProfile = async (req, res) => {
   try {
-    const token = req.headers.authorization.split(' ')[1]
-    const user = await getUserInfo(token)  // fetch from Auth0 /userinfo
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ error: 'Missing or invalid Authorization header' });
+    }
+
+    const token = authHeader.split(' ')[1];
+    const user = await getUserInfo(token); // fetch from Auth0 /userinfo
 
     res.json({
       success: true,
@@ -11,10 +16,12 @@ export const getUserProfile = async (req, res) => {
         id: user.sub,
         name: user.name,
         email: user.email,
-        picture: user.picture
-      }
-    })
+        picture: user.picture,
+      },
+    });
   } catch (err) {
-    res.status(500).json({ error: err.message })
+    res.status(500).json({ error: err.message });
   }
-}
+};
+
+module.exports = { getUserProfile };

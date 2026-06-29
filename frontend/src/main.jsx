@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import App from './App'
 import Dashboard from './Pages/Dashboard/page'
 import CreateCourse from './Pages/CreateCourse/CreateCourse'
+import AterCourseGeneration from './Pages/RENDERCOURSE/AterCourseGeneration'
 import ProtectedRoute from './_components/ProtectedRoute'
 import './index.css'
 
@@ -32,6 +33,14 @@ createRoot(document.getElementById('root')).render(
             }
           />
           <Route path="/create-course" element={<CreateCourse />} />
+          <Route
+            path="/course/:courseId"
+            element={
+              <ProtectedRoute>
+                <AterCourseGeneration />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </Auth0Provider>

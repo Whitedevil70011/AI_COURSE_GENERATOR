@@ -1,5 +1,7 @@
-const { GoogleGenAI } = require("@google/genai");
+const { generateWithGroq } = require('./providers/groqService');
+const { generateWithGemini } = require('./providers/geminiService');
 
+// ── Main exported function ────────────────────────────────────────────────────
 const generateCourseLayout = async (userInput) => {
   const { category, topic, description, difficulty, duration, video, chapters } = userInput;
 
@@ -39,23 +41,30 @@ Include Videos: ${video}
 Number of Chapters: ${chapters}
 `;
 
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) throw new Error("Missing GEMINI_API_KEY");
+  // Switch provider via AI_PROVIDER env var: "groq" | "gemini" (default: groq)
+  const provider = (process.env.AI_PROVIDER || 'groq').toLowerCase();
+  console.log(`Using AI provider: ${provider}`);
 
-  const ai = new GoogleGenAI({ apiKey });
-  const result = await ai.models.generateContent({
-    model: "gemini-2.5-flash",
-    contents: prompt,
-  });
+  let responseText = '';
 
-  const responseText = result.text || "";
+  if (provider === 'groq') {
+    responseText = await generateWithGroq(prompt);
+  } else {
+    responseText = await generateWithGemini(prompt);
+  }
+
   const cleaned = responseText
-    .replace(/^```json\s*/i, "")
-    .replace(/^```\s*/i, "")
-    .replace(/```\s*$/i, "")
+    .replace(/^```json\s*/i, '')
+    .replace(/^```\s*/i, '')
+    .replace(/```\s*$/i, '')
     .trim();
 
-  return JSON.parse(cleaned);
+  try {
+    return JSON.parse(cleaned);
+  } catch (parseError) {
+    console.error('Invalid JSON from AI response:', responseText);
+    throw new Error('AI returned invalid JSON response');
+  }
 };
 
 module.exports = { generateCourseLayout };

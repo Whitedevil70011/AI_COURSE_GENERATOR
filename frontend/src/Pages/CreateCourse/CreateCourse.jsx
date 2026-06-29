@@ -10,9 +10,13 @@ import TopicDescription from "./TopicDescription";
 import SelectOption from "./SelectOption";
 import { UserInputContext } from "../../Context/userInputcontext";
 
-const BASE_URL = "http://localhost:3000/api";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+import { useNavigate } from "react-router-dom";
 
 function CreateCourse() {
+  const navigate = useNavigate();
+
   const Stepper = [
     { id: 1, name: "Category", icon: <HiMiniSquares2X2 /> },
     { id: 2, name: "Topic & Desc", icon: <HiLightBulb /> },
@@ -20,6 +24,9 @@ function CreateCourse() {
   ];
 
   const [currentStep, setCurrentStep] = React.useState(0);
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  
   const [userInput, setUserInput] = React.useState({
     difficulty: "Beginner",
     duration: "1 Hour",
@@ -55,21 +62,37 @@ function CreateCourse() {
   };
 
   const createBasicCourseLayout = async () => {
-    const response = await fetch(`${BASE_URL}/courses/generate`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(userInput),
-    });
+    setIsLoading(true);
+    try {
+      const response = await fetch(`${BASE_URL}/courses/generate`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userInput),
+      });
 
-    if (!response.ok) {
-      throw new Error(`Course generation failed: ${response.status}`);
+      if (!response.ok) {
+        const errorBody = await response.json().catch(() => null);
+        const serverMessage = errorBody?.message || errorBody?.error || response.statusText;
+        throw new Error(`Course generation failed: ${response.status} ${serverMessage}`);
+      }
+
+      const result = await response.json();
+
+      if (!result.courseId) {
+        throw new Error("No courseId in response");
+      }
+
+      const courseUrl = `/course/${result.courseId}`;
+      navigate(courseUrl);
+      
+      return result;
+    } catch (error) {
+      console.error("Error creating course:", error);
+      alert("Failed to create course: " + error.message);
+      setIsLoading(false);
     }
-
-    const result = await response.json();
-    console.log("Course saved:", result);
-    return result;
   };
 
   return (
@@ -278,27 +301,37 @@ function CreateCourse() {
 
             {currentStep === Stepper.length - 1 && (
               <button
-                onClick={createBasicCourseLayout}
-                disabled={!isOptionsStepComplete}
+                onClick={() => {
+                  createBasicCourseLayout().catch(err => {
+                    console.error("Navigation error:", err);
+                  });
+                }}
+                disabled={!isOptionsStepComplete || isLoading}
                 style={{
                   padding: "10px 32px",
                   borderRadius: "10px",
                   border: "none",
-                  background: isOptionsStepComplete
-                    ? "linear-gradient(135deg,#7c3aed,#d946ef)"
-                    : "linear-gradient(135deg,#c4b5fd,#ddd6fe)",
-                  color: isOptionsStepComplete ? "#fff" : "#f5f3ff",
+                  background:
+                    isOptionsStepComplete && !isLoading
+                      ? "linear-gradient(135deg,#7c3aed,#d946ef)"
+                      : "linear-gradient(135deg,#c4b5fd,#ddd6fe)",
+                  color:
+                    isOptionsStepComplete && !isLoading ? "#fff" : "#f5f3ff",
                   fontWeight: 700,
                   fontSize: "14px",
-                  cursor: isOptionsStepComplete ? "pointer" : "not-allowed",
-                  boxShadow: isOptionsStepComplete
-                    ? "0 4px 14px rgba(124,58,237,0.35)"
-                    : "none",
+                  cursor:
+                    isOptionsStepComplete && !isLoading
+                      ? "pointer"
+                      : "not-allowed",
+                  boxShadow:
+                    isOptionsStepComplete && !isLoading
+                      ? "0 4px 14px rgba(124,58,237,0.35)"
+                      : "none",
                   transition: "all 0.2s",
-                  opacity: isOptionsStepComplete ? 1 : 0.7,
+                  opacity: isOptionsStepComplete && !isLoading ? 1 : 0.7,
                 }}
               >
-                  🚀 Generate Course
+                {isLoading ? "⏳ Generating..." : "🚀 Generate Course"}
               </button>
             )}
           </div>

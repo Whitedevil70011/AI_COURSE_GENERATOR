@@ -4,44 +4,28 @@ const {
   generateAndSaveCourse,
   getUserCourses,
   getCourseById,
-  deleteCourse
+  deleteCourse,
+  updateCourse,
+  uploadThumbnail,
+  upload
 } = require('../controllers/courseController');
 
-// Test endpoint to check API
-router.post('/test', async (req, res) => {
-  try {
-    console.log("Test endpoint called");
-    const { generateCourseLayout } = require('../services/aiService');
-    
-    const testData = {
-      category: "Technology",
-      topic: "Python Basics",
-      description: "Learn Python programming",
-      difficulty: "Beginner",
-      duration: "10 hours",
-      video: "Yes",
-      chapters: 2
-    };
-    
-    console.log("Calling generateCourseLayout with:", testData);
-    const result = await generateCourseLayout(testData);
-    console.log("Result:", result);
-    res.json({ success: true, data: result });
-  } catch (error) {
-    console.error("Test error:", error.message);
-    console.error("Stack:", error.stack);
-    res.status(500).json({ success: false, error: error.message, stack: error.stack });
-  }
-});
-
-// POST routes first
+// POST /generate - Create new course
 router.post('/generate', generateAndSaveCourse);
 
-// Specific named routes BEFORE generic parameter routes
+// POST /:courseId/upload-thumbnail - Upload course thumbnail
+router.post('/:courseId/upload-thumbnail', upload.single('file'), uploadThumbnail);
+
+// GET /user/:userId - Get user's courses
 router.get('/user/:userId', getUserCourses);
 
-// Generic parameter routes last
+// PUT /:courseId - Update course
+router.put('/:courseId', updateCourse);
+
+// GET /:courseId - Get course by ID
 router.get('/:courseId', getCourseById);
+
+// DELETE /:courseId - Delete course
 router.delete('/:courseId', deleteCourse);
 
 module.exports = router;

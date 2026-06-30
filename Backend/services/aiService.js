@@ -5,7 +5,7 @@ const { generateWithGemini } = require('./providers/geminiService');
 const generateCourseLayout = async (userInput) => {
   const { category, topic, description, difficulty, duration, video, chapters } = userInput;
 
-  const prompt = `
+ const prompt = `
 Generate a course outline based on the user input below.
 Return ONLY a valid JSON object — no markdown, no explanation, no backticks.
 
@@ -20,16 +20,26 @@ JSON format (strict):
   "modules": [
     {
       "title": "",
-      "lessons": ["Lesson Title 1", "Lesson Title 2"]
+      "description": "A brief 1-2 sentence summary of what this module covers.",
+      "duration": "20 minutes",
+      "lessons": [
+        {
+          "title": "Lesson Title",
+          "description": "Brief description of this lesson.",
+          "duration": "10 minutes"
+        }
+      ]
     }
   ]
 }
 
 Rules:
 - Use "modules" not "chapters"
-- Each module must have a "lessons" array
+- Each module MUST have: title, description, duration, and lessons array
+- Each lesson MUST have: title, description, duration
 - Number of modules = Number of Chapters requested
-- Each module should have 3-5 lesson titles
+- Each module should have 3-5 lessons
+- Duration should be realistic (e.g., "15 minutes", "30 minutes")
 - Return JSON only
 
 Category: ${category}

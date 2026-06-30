@@ -14,6 +14,12 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 
+// Serve static files from uploads directory
+const uploadsPath = require('path').join(__dirname, 'uploads');
+console.log('📁 Static uploads path:', uploadsPath);
+app.use('/uploads', express.static(uploadsPath));
+console.log('✅ Serving /uploads route from:', uploadsPath);
+
 app.use('/api/courses', courseRoutes);
 app.use('/api/users', userRoutes);
 
@@ -22,6 +28,7 @@ app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
-app.listen(process.env.PORT || 3000, () => {
-  console.log(`Server running on port ${process.env.PORT || 3000}`);
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });

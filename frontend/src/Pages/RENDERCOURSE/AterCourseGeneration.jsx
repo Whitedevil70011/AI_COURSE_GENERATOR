@@ -4,6 +4,7 @@ import BasicCourseDetails from "./BasicCoursdetails";
 import CourseDetail from "./CourseDetail";
 import ChapterList from "./ChapterList";
 
+import Header from "../../_components/Header";
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 function AterCourseGeneration() {
@@ -43,9 +44,15 @@ function AterCourseGeneration() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+    <Header />
       <div className="max-w-4xl mx-auto px-4 py-10">
         <h2 className="text-center text-lg font-bold text-gray-800 mb-6">Course Layout</h2>
-        <BasicCourseDetails course={course} />
+        <BasicCourseDetails course={course} onCourseUpdate={(updatedCourse) => {
+          console.log('Course updated:', updatedCourse);
+          setCourse(updatedCourse);
+          // Optionally refresh from backend to verify persistence
+          getCourseByID();
+        }} />
         <CourseDetail course={course} />
         <ChapterList modules={modules} />
       </div>

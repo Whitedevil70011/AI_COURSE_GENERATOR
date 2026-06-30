@@ -1,4 +1,5 @@
 import { LuClock } from "react-icons/lu";
+import { FaEdit } from "react-icons/fa";
 
 function ChapterList({ modules }) {
   if (!modules || modules.length === 0) {
@@ -31,6 +32,7 @@ function ChapterList({ modules }) {
                 <span>{module.duration || "—"}</span>
               </div>
             </div>
+            <FaEdit />
 
           </div>
         ))}

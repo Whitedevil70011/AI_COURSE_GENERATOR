@@ -10,7 +10,8 @@ const courseSchema = new mongoose.Schema({
   creator: { type: String, required: true },
   isEnriched: { type: Boolean, default: false },
   tags: [{ type: String }],
-  modules: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Module' }], // 👈 add this
+  thumbnail: { type: String, default: null }, // 👈 add this
+  modules: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Module' }],
 }, { timestamps: true });
 
 module.exports = mongoose.model('Course', courseSchema);

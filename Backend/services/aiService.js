@@ -53,12 +53,22 @@ Number of Chapters: ${chapters}
 
   // Switch provider via AI_PROVIDER env var: "groq" | "gemini" (default: groq)
   const provider = (process.env.AI_PROVIDER || 'groq').toLowerCase();
-  console.log(`Using AI provider: ${provider}`);
 
   let responseText = '';
 
   if (provider === 'groq') {
-    responseText = await generateWithGroq(prompt);
+    try {
+      responseText = await generateWithGroq(prompt);
+    } catch (error) {
+      const message = error?.message || '';
+      const isRateLimit = message.includes('rate_limit_exceeded') || message.includes('Groq API error 429');
+
+      if (!isRateLimit) {
+        throw error;
+      }
+
+      responseText = await generateWithGemini(prompt);
+    }
   } else {
     responseText = await generateWithGemini(prompt);
   }
@@ -69,8 +79,19 @@ Number of Chapters: ${chapters}
     .replace(/```\s*$/i, '')
     .trim();
 
+  const extractJson = (text) => {
+    const firstBrace = text.indexOf('{');
+    const lastBrace = text.lastIndexOf('}');
+
+    if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+      return text.slice(firstBrace, lastBrace + 1).trim();
+    }
+
+    return text;
+  };
+
   try {
-    return JSON.parse(cleaned);
+    return JSON.parse(extractJson(cleaned));
   } catch (parseError) {
     console.error('Invalid JSON from AI response:', responseText);
     throw new Error('AI returned invalid JSON response');

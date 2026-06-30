@@ -7,7 +7,9 @@ const {
   deleteCourse,
   updateCourse,
   uploadThumbnail,
-  upload
+  upload,
+  generateLessonsForCourse
+
 } = require('../controllers/courseController');
 
 // POST /generate - Create new course
@@ -27,5 +29,8 @@ router.get('/:courseId', getCourseById);
 
 // DELETE /:courseId - Delete course
 router.delete('/:courseId', deleteCourse);
+
+/// crete lesson
+router.post('/:courseId/generate-lessons', generateLessonsForCourse);
 
 module.exports = router;

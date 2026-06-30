@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { Pencil, X } from "lucide-react";
+import { FaEdit } from "react-icons/fa";
 
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
@@ -66,7 +67,7 @@ export default function BasicCourseDetails({ course, onCourseUpdate }) {
         <div className="flex items-center gap-2">
           <h1 className="text-2xl font-bold text-gray-900">{courseData.title}</h1>
           <button onClick={openModal} className="text-gray-400 hover:text-violet-600">
-            <Pencil size={16} />
+             <FaEdit />
           </button>
         </div>
         <p className="text-sm text-gray-500">{courseData.description}</p>

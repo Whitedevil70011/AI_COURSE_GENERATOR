@@ -10,6 +10,6 @@ const { getLessonById, enrichLessonVideo } = require("../controllers/lessonContr
 router.get("/:lessonId", getLessonById);
 
 // When a POST request hits this URL, run the enrichLessonVideo function
-router.post("/lessons/:lessonId/enrich-video", enrichLessonVideo);
+router.post("/:lessonId/enrich-video", enrichLessonVideo);
 
 module.exports = router;

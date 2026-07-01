@@ -13,20 +13,43 @@ function LessonDetail() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
+  async function loadLesson() {
+    const response = await fetch(`${BASE_URL}/lessons/${lessonId}`)
+    if (!response.ok) {
+      throw new Error(`Failed: ${response.status}`)
+    }
+
+    return response.json()
+  }
+
+  async function enrichLessonVideoIfNeeded(lessonData) {
+    if (lessonData?.videoUrl || !lessonData?.videoSearchQuery) {
+      return lessonData
+    }
+
+    const enrichResponse = await fetch(`${BASE_URL}/lessons/${lessonId}/enrich-video`, {
+      method: 'POST',
+    })
+
+    if (!enrichResponse.ok) {
+      return lessonData
+    }
+
+    const enrichedLesson = await enrichResponse.json()
+    return enrichedLesson || lessonData
+  }
+
   useEffect(() => {
     let cancelled = false
 
     async function fetchLesson() {
       try {
         setLoading(true)
-        const response = await fetch(`${BASE_URL}/lessons/${lessonId}`)
-        if (!response.ok) {
-          throw new Error(`Failed: ${response.status}`)
-        }
+        const data = await loadLesson()
+        const lessonData = await enrichLessonVideoIfNeeded(data)
 
-        const data = await response.json()
         if (!cancelled) {
-          setLesson(data)
+          setLesson(lessonData)
           setError(null)
         }
       } catch (err) {

@@ -1,11 +1,12 @@
 // CodeBlock.jsx
 
 // A slightly-more-than-simple block component.
-// Still no state — but it uses TWO fields from block: language and text.
+// Still no state — but it uses the language plus the code text.
 
 function CodeBlock({ block }) {
   // block.language -> e.g. "python", "javascript" (used just as a label here)
-  // block.text     -> the actual code content
+  // block.code or block.text -> the actual code content
+  const code = block.code || block.text || "";
 
   return (
     <div className="mb-5 rounded-xl overflow-hidden border border-gray-700">
@@ -16,7 +17,7 @@ function CodeBlock({ block }) {
 
       {/* The actual code content */}
       <pre className="bg-gray-900 text-gray-100 text-sm font-mono p-4 overflow-x-auto">
-        <code>{block.text}</code>
+        <code>{code}</code>
       </pre>
     </div>
   );

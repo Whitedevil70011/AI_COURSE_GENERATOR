@@ -82,8 +82,8 @@ function CourseDetail() {
   }
 
   function goToLesson(lessonId) {
-    if (!lessonId) return;
-    navigate(`/course/${courseId}/lesson/${lessonId}`);
+   if (!lessonId) return;
+  navigate(`/courses/${courseId}/lesson/${lessonId}`);
   }
 
   // Count total lessons across all modules

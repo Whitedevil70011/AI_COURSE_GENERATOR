@@ -1,9 +1,15 @@
 // CourseCard.jsx
 import { useNavigate } from "react-router-dom";
-import { Clock, BarChart3, Trash2, ArrowRight } from "lucide-react";
+import { Clock, BarChart3, Trash2, ArrowRight, Users } from "lucide-react";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const SERVER_ORIGIN = BASE_URL?.replace(/\/api\/?$/, "") || "";
+
+const difficultyStyles = {
+  Beginner: "bg-emerald-50 text-emerald-600",
+  Intermediate: "bg-amber-50 text-amber-600",
+  Advanced: "bg-rose-50 text-rose-600",
+};
 
 function CourseCard({ course, onDelete }) {
   // course.title        -> course name
@@ -20,39 +26,45 @@ function CourseCard({ course, onDelete }) {
     ? `${SERVER_ORIGIN}${course.thumbnail}`
     : null;
 
-   // Central place that decides where "Get Started" goes
-   const goToCourse = () => navigate(`/courses/${course._id}`);
+  const difficultyStyle =
+    difficultyStyles[course.difficulty] || "bg-slate-100 text-slate-600";
+
+  // Central place that decides where "Get Started" goes
+  const goToCourse = () => navigate(`/courses/${course._id}`);
 
   return (
     <div
       onClick={goToCourse}
-      className="group bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden
-                 cursor-pointer transition-all duration-200
-                 hover:shadow-lg hover:-translate-y-1 hover:border-[#0F1B3D]/20"
+      className="group bg-white rounded-2xl border-2 border-blue-100 overflow-hidden
+                 cursor-pointer transition-all duration-300
+                 hover:shadow-xl hover:shadow-blue-100/60 hover:-translate-y-1 hover:border-blue-300"
     >
       {/* Image section */}
-      <div className="w-full h-40 bg-slate-100 overflow-hidden flex items-center justify-center">
+      <div className="relative w-full h-40 bg-gradient-to-br from-[#0F1B3D] to-[#1E2E5C] overflow-hidden flex items-center justify-center">
         {thumbnailUrl ? (
           <img
             src={thumbnailUrl}
             alt={course.title}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
             onError={(e) => {
               e.target.style.display = "none";
-              e.target.parentElement.innerHTML = `<span class="text-slate-400 text-sm">No image</span>`;
+              e.target.parentElement.innerHTML = `<span class="text-white/40 text-xs font-mono tracking-wide">NO PREVIEW</span>`;
             }}
           />
         ) : (
-          <span className="text-slate-400 text-sm">No image</span>
+          <span className="text-white/40 text-xs font-mono tracking-wide">NO PREVIEW</span>
+        )}
+
+        {/* Category badge floating on the image */}
+        {course.category && (
+          <span className="absolute top-3 left-3 rounded-full bg-white/95 backdrop-blur px-2.5 py-1 text-[11px] font-semibold text-[#0F1B3D] shadow-sm">
+            {course.category}
+          </span>
         )}
       </div>
 
       {/* Card content */}
       <div className="p-4">
-        <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">
-          {course.category}
-        </p>
-
         <h3 className="font-bold text-[#0F1B3D] mb-1 leading-snug line-clamp-1">
           {course.title}
         </h3>
@@ -62,19 +74,25 @@ function CourseCard({ course, onDelete }) {
         </p>
 
         {/* Meta info row */}
-        <div className="flex items-center gap-3 text-xs text-slate-400 mb-4">
-          <span className="flex items-center gap-1">
-            <Clock className="h-3.5 w-3.5" />
+        <div className="flex flex-wrap items-center gap-2 mb-4">
+          <span className="inline-flex items-center gap-1 rounded-full bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-600">
+            <Clock className="h-3 w-3" />
             {course.duration}
           </span>
-          <span className="flex items-center gap-1">
-            <BarChart3 className="h-3.5 w-3.5" />
+          {course.studentsEnrolled ? (
+            <span className="inline-flex items-center gap-1 rounded-full bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-600">
+              <Users className="h-3 w-3" />
+              {course.studentsEnrolled}+
+            </span>
+          ) : null}
+          <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium ${difficultyStyle}`}>
+            <BarChart3 className="h-3 w-3" />
             {course.difficulty}
           </span>
         </div>
 
         {/* Action buttons */}
-        <div className="flex gap-2">
+        <div className="flex gap-2 pt-3 border-t border-blue-50">
           <button
             onClick={(e) => {
               e.stopPropagation(); // don't double-fire with the card's own onClick
@@ -85,7 +103,7 @@ function CourseCard({ course, onDelete }) {
                        hover:bg-[#18285C] active:scale-95 transition-all"
           >
             Get Started
-            <ArrowRight className="h-4 w-4" />
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </button>
 
           <button

@@ -25,7 +25,15 @@ function LessonRenderer({ lesson }) {
     );
   }
 
-  const { title, objectives, content, videoId, isEnriched } = lesson;
+  const { title, objectives, content, videoId, videoUrl, isEnriched } = lesson;
+  const lessonContent = Array.isArray(content)
+    ? content
+    : Array.isArray(lesson.blocks)
+      ? lesson.blocks
+      : Array.isArray(lesson.lessonContent)
+        ? lesson.lessonContent
+        : [];
+  const lessonVideoUrl = videoUrl || videoId || null;
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
@@ -50,19 +58,19 @@ function LessonRenderer({ lesson }) {
 
       {/* Content blocks */}
       <div className="lesson-content">
-        {!content || content.length === 0 ? (
+        {lessonContent.length === 0 ? (
           <div className="text-gray-400 text-center py-10">
             No content available for this lesson yet.
           </div>
         ) : (
-          content.map((block, index) => {
+          lessonContent.map((block, index) => {
             // SPECIAL CASE: video needs extra props
             if (block.type === "video") {
               return (
                 <VideoBlock
                   key={index}
                   block={block}
-                  videoUrl={videoId}
+                  videoUrl={lessonVideoUrl}
                   isEnriched={isEnriched}
                 />
               );

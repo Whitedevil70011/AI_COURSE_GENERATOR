@@ -32,7 +32,14 @@ createRoot(document.getElementById('root')).render(
               </ProtectedRoute>
             }
           />
-          <Route path="/create-course" element={<CreateCourse />} />
+          <Route
+            path="/create-course"
+            element={
+              <ProtectedRoute>
+                <CreateCourse />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/course/:courseId"
             element={

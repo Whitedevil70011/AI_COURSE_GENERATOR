@@ -1,10 +1,9 @@
 const { generateWithGroq } = require('./providers/groqService');
 const { generateWithGemini } = require('./providers/geminiService');
 
-// Small helper: pause for a given number of milliseconds
+// Pause for a given number of milliseconds
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-// ── Main exported function ────────────────────────────────────────────────────
 const generateLessonLayout = async (courseTitle, moduleTitle, lessonTitle) => {
   const prompt = `
 Generate a detailed lesson layout based on the context below.
@@ -54,7 +53,6 @@ Rules:
 - Return JSON only, no extra text.
 `;
 
-  // Switch provider via AI_PROVIDER env var: "groq" | "gemini" (default: groq)
   const provider = (process.env.AI_PROVIDER || 'groq').toLowerCase();
 
   let responseText = '';
@@ -63,32 +61,42 @@ Rules:
     try {
       responseText = await generateWithGroq(prompt);
     } catch (error) {
-      const message = error?.message || '';
       const isRateLimit =
-        message.includes('rate_limit_exceeded') || message.includes('Groq API error 429');
+        error?.message?.includes('rate_limit_exceeded') ||
+        error?.message?.includes('Groq API error 429');
 
       if (!isRateLimit) {
         throw error;
       }
 
-      // Groq is rate limited — wait and retry Groq itself,
-      // instead of falling back to Gemini (which has a very
-      // small daily quota and runs out fast).
-      console.log('Groq rate limited. Waiting 10s before retrying...');
-      await wait(10000);
+      // Retry up to 3 times with increasing wait time
+      let success = false;
 
-      try {
-        responseText = await generateWithGroq(prompt);
-      } catch (retryError) {
-        console.error('Groq retry also failed:', retryError.message);
-        throw retryError;
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        console.log(`Groq rate limited. Waiting ${attempt * 10}s before retry ${attempt}...`);
+        await wait(attempt * 10000); // 10s, 20s, 30s
+
+        try {
+          responseText = await generateWithGroq(prompt);
+          success = true;
+          break;
+        } catch (retryError) {
+          console.error(`Retry ${attempt} failed:`, retryError.message);
+        }
+      }
+
+      if (!success) {
+        // Groq failed even after retries — fall back to Gemini
+        console.log('Groq failed after retries, falling back to Gemini...');
+        responseText = await generateWithGemini(prompt);
       }
     }
   } else {
     responseText = await generateWithGemini(prompt);
   }
 
-  const cleaned = responseText
+  // Strip markdown code fences if present
+  let cleaned = responseText
     .replace(/^```json\s*/i, '')
     .replace(/^```\s*/i, '')
     .replace(/```\s*$/i, '')
@@ -105,23 +113,35 @@ Rules:
     return text;
   };
 
+  // Attempt to repair common AI JSON mistakes:
+  // - trailing commas before } or ]
+  // - smart/curly quotes instead of straight quotes
+  const repairJson = (text) => {
+    return text
+      .replace(/,\s*([}\]])/g, '$1') // remove trailing commas
+      .replace(/[\u201C\u201D]/g, '"') // smart double quotes -> straight
+      .replace(/[\u2018\u2019]/g, "'"); // smart single quotes -> straight
+  };
+
+  const candidate = extractJson(cleaned);
+
   let lessonData;
   try {
-    lessonData = JSON.parse(extractJson(cleaned));
-  } catch (parseError) {
-    console.error('Invalid JSON from AI response:', responseText);
-    throw new Error('AI returned invalid JSON response');
-  }
-
-  // Validate MCQs: correctAnswer must exactly match one of the options
-  if (Array.isArray(lessonData.content)) {
-    lessonData.content.forEach((block, index) => {
-      if (block.type === 'mcq') {
-        if (!Array.isArray(block.options) || !block.options.includes(block.correctAnswer)) {
-          console.warn(`MCQ at content[${index}] has a correctAnswer that doesn't match its options:`, block);
-        }
-      }
-    });
+    lessonData = JSON.parse(candidate);
+  } catch (firstError) {
+    // First parse failed — try repairing common issues and parse again
+    try {
+      lessonData = JSON.parse(repairJson(candidate));
+      console.warn('JSON required repair before parsing successfully.');
+    } catch (secondError) {
+      // Still failed — log the FULL raw response so we can see exactly
+      // what the model returned and adjust the prompt / max_tokens.
+      console.error('--- RAW AI RESPONSE (failed to parse) ---');
+      console.error(responseText);
+      console.error('--- END RAW AI RESPONSE ---');
+      console.error('Parse error:', secondError.message);
+      throw new Error('AI returned invalid JSON response');
+    }
   }
 
   return lessonData;

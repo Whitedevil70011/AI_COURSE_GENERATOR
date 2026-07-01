@@ -22,6 +22,8 @@ console.log('✅ Serving /uploads route from:', uploadsPath);
 
 app.use('/api/courses', courseRoutes);
 app.use('/api/users', userRoutes);
+const lessonRoutes = require("./routes/lessonRoutes");
+app.use("/api/lessons", lessonRoutes);
 
 // 404 fallback
 app.use((req, res) => {

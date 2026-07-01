@@ -1,29 +1,20 @@
 import React from "react";
-import { useAuth0 } from "@auth0/auth0-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 function AddCourse() {
-  const { user } = useAuth0();
-
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-start">
+    <div className="px-6 pt-6 pb-2 md:px-10">
+      <div className="flex flex-col gap-4 rounded-2xl border border-slate-200/80 bg-white/80 px-5 py-4 shadow-[0_20px_50px_-35px_rgba(15,23,42,0.35)] backdrop-blur-md sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="flex items-center gap-1.5 flex-wrap">
-            <span className="text-lg font-medium text-slate-500">Hello,</span>
-            <span className="text-lg font-semibold text-indigo-600">
-              {user?.name || "Guest"}
-            </span>
-          </h1>
-
-          <p className="text-xs text-slate-400 mt-1">
-            Learn new things from AI and share knowledge with your friends
+          <h1 className="text-xl font-semibold text-slate-900">Dashboard</h1>
+          <p className="mt-1 text-sm text-slate-500">
+            Create and manage your AI courses from one place.
           </p>
         </div>
-        
-        <Link to="/create-course">
-          <Button className="bg-violet-600 hover:bg-violet-700 text-white h-9 px-4 rounded-md text-sm font-medium">
+
+        <Link to="/create-course" className="sm:self-start">
+          <Button className="h-10 rounded-full bg-violet-600 px-5 text-sm font-semibold text-white shadow-lg shadow-violet-500/20 hover:bg-violet-700">
             + Create AI Course
           </Button>
         </Link>

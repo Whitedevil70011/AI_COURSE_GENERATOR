@@ -1,4 +1,5 @@
 import React from "react";
+import { useAuth0 } from "@auth0/auth0-react";
 import {
   HiMiniSquares2X2,
   HiLightBulb,
@@ -16,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 
 function CreateCourse() {
   const navigate = useNavigate();
+  const { user, isLoading: authLoading, isAuthenticated } = useAuth0();
 
   const Stepper = [
     { id: 1, name: "Category", icon: <HiMiniSquares2X2 /> },
@@ -62,6 +64,11 @@ function CreateCourse() {
   };
 
   const createBasicCourseLayout = async () => {
+    if (!isAuthenticated || !user?.sub) {
+      alert("Please sign in before creating a course.");
+      return;
+    }
+
     setIsLoading(true);
     try {
       const response = await fetch(`${BASE_URL}/courses/generate`, {
@@ -69,7 +76,11 @@ function CreateCourse() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(userInput),
+        body: JSON.stringify({
+          ...userInput,
+          userId: user?.sub,
+          userEmail: user?.email,
+        }),
       });
 
       if (!response.ok) {
@@ -94,6 +105,14 @@ function CreateCourse() {
       setIsLoading(false);
     }
   };
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-slate-500">
+        Loading account...
+      </div>
+    );
+  }
 
   return (
     <UserInputContext.Provider value={{ userInput, setUserInput }}>

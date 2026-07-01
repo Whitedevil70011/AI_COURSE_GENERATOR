@@ -5,6 +5,7 @@ import CourseDetail from "./CourseDetail";
 import ChapterList from "./ChapterList";
 import { Button } from "../../components/ui/button";
 import Header from "../../_components/Header";
+import MCQBlock from "../Blocks/MCQBlock";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -63,7 +64,9 @@ function AterCourseGeneration() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data?.message || `Request failed with status ${res.status}`);
+        throw new Error(
+          data?.message || `Request failed with status ${res.status}`,
+        );
       }
 
       alert("Lessons generated!");
@@ -135,6 +138,18 @@ function AterCourseGeneration() {
             {generating ? "Generating..." : "GENERATE COURSE CONTENT"}
           </Button>
         </div>
+        <MCQBlock
+          block={{
+            type: "mcq",
+            question:
+              "Which of the following is a primary goal of affinity mapping in user r…",
+            options: ["Option A", "Option B", "Option C", "Option D"],
+            correctAnswer:
+              "To group similar observations and ideas to identify themes and pattern…",
+            explanation:
+              "Affinity mapping is a synthesis technique used to organize large amoun…",
+          }}
+        />
       </div>
     </div>
   );

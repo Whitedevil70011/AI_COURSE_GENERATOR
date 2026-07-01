@@ -5,6 +5,26 @@
 const Lesson = require("../models/Lesson"); // adjust path if needed
 const { searchYoutubeVideo } = require("../services/youtubeService");
 
+async function getLessonById(req, res) {
+  try {
+    const { lessonId } = req.params;
+
+    const lesson = await Lesson.findById(lessonId).populate({
+      path: "module",
+      select: "title description course",
+    });
+
+    if (!lesson) {
+      return res.status(404).json({ message: "Lesson not found" });
+    }
+
+    return res.status(200).json(lesson);
+  } catch (error) {
+    console.error("Get lesson error:", error.message);
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+}
+
 // Controller function to enrich a lesson with a YouTube video
 async function enrichLessonVideo(req, res) {
   try {
@@ -42,4 +62,4 @@ async function enrichLessonVideo(req, res) {
 }
 
 // Export this function so the routes file can use it
-module.exports = { enrichLessonVideo };
+module.exports = { getLessonById, enrichLessonVideo };

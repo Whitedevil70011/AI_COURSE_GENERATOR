@@ -1,10 +1,10 @@
 // LessonRenderer.jsx
 
-import HeadingBlock from "./blocks/HeadingBlock";
-import ParagraphBlock from "./blocks/ParagraphBlock";
-import CodeBlock from "./blocks/CodeBlock";
-import VideoBlock from "./blocks/VideoBlock";
-import MCQBlock from "./blocks/MCQBlock";
+import HeadingBlock from "./Blocks/HeadingBlock.jsx";
+import ParagraphBlock from "./Blocks/ParagraphBlock.jsx";
+import CodeBlock from "./Blocks/CodeBlock.jsx";
+import VideoBlock from "./Blocks/VideoBlock.jsx";
+import MCQBlock from "./Blocks/MCQBlock.jsx";
 
 const blockComponentMap = {
   heading: HeadingBlock,
@@ -62,7 +62,7 @@ function LessonRenderer({ lesson }) {
                 <VideoBlock
                   key={index}
                   block={block}
-                  videoId={videoId}
+                  videoUrl={videoId}
                   isEnriched={isEnriched}
                 />
               );

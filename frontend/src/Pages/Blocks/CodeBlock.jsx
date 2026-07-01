@@ -9,7 +9,6 @@ function CodeBlock({ block }) {
 
   return (
     <div className="mb-5 rounded-xl overflow-hidden border border-gray-700">
-      
       {/* Top bar showing the language name, like VS Code / most code editors do */}
       <div className="bg-gray-800 text-gray-300 text-xs font-mono px-4 py-2 uppercase tracking-wide">
         {block.language || "code"}

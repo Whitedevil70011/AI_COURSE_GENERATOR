@@ -5,7 +5,9 @@
 const express = require("express");
 const router = express.Router();
 
-const { enrichLessonVideo } = require("../controllers/lessonController");
+const { getLessonById, enrichLessonVideo } = require("../controllers/lessonController");
+
+router.get("/:lessonId", getLessonById);
 
 // When a POST request hits this URL, run the enrichLessonVideo function
 router.post("/lessons/:lessonId/enrich-video", enrichLessonVideo);

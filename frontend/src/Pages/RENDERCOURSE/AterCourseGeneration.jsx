@@ -4,8 +4,9 @@ import BasicCourseDetails from "./BasicCoursdetails";
 import CourseDetail from "./CourseDetail";
 import ChapterList from "./ChapterList";
 import { Button } from "../../components/ui/button";
+import { Loader2 } from "lucide-react";
 import Header from "../../_components/Header";
-import MCQBlock from "../Blocks/MCQBlock";
+import Sidebar from "../Dashboard/Sidebar";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -20,6 +21,18 @@ function AterCourseGeneration() {
 
   // Tracks whether lesson generation is currently running
   const [generating, setGenerating] = useState(false);
+
+  const [isCollapsed, setIsCollapsed] = useState(() => {
+    return localStorage.getItem("dashboard-sidebar-collapsed") === "true";
+  });
+
+  const toggleSidebar = () => {
+    setIsCollapsed((prev) => {
+      const newVal = !prev;
+      localStorage.setItem("dashboard-sidebar-collapsed", String(newVal));
+      return newVal;
+    });
+  };
 
   // Load the course as soon as we know the courseId
   useEffect(() => {
@@ -106,51 +119,82 @@ function AterCourseGeneration() {
     );
   }
 
-  // ── Main page ────────────────────────────────────────────────
+  // ── Main page with Sidebar layout ────────────────────────────
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen w-full bg-[radial-gradient(circle_at_top,rgba(168,85,247,0.18),transparent_28%),linear-gradient(180deg,#f8faff_0%,#eef2ff_100%)] text-slate-900 flex flex-col">
       <Header />
+      <div className="flex flex-1 w-full min-h-[calc(100vh-73px)] bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.12),transparent_30%),radial-gradient(circle_at_top_right,rgba(168,85,247,0.12),transparent_26%),linear-gradient(180deg,rgba(248,250,252,0.98),rgba(241,245,255,0.96))]">
+        <aside className={`transition-all duration-300 ${isCollapsed ? "w-20" : "w-72"} shrink-0 border-r border-slate-200/80 bg-white/75 backdrop-blur-xl text-slate-900 shadow-[10px_0_30px_-24px_rgba(15,23,42,0.35)] hidden md:block relative`}>
+          <Sidebar isCollapsed={isCollapsed} onToggle={toggleSidebar} />
+        </aside>
+        
+        <main className="flex-1 min-w-0 overflow-y-auto h-[calc(100vh-73px)]">
+          <div className="flex w-full max-w-[1100px] flex-col gap-6 px-4 py-8 md:px-8 lg:px-10">
+            
+            <div className="flex items-center justify-between border-b border-slate-200/60 pb-4">
+              <h2 className="text-2xl font-bold text-[#0F1B3D]">Course Curriculum Outline</h2>
+              <span className="text-sm font-semibold px-3.5 py-1.5 rounded-full bg-blue-50 text-blue-700 border border-blue-100">
+                Setup Stage
+              </span>
+            </div>
 
-      <div className="max-w-4xl mx-auto px-4 py-10">
-        <h2 className="text-center text-lg font-bold text-gray-800 mb-6">
-          Course Layout
-        </h2>
+            <BasicCourseDetails
+              course={course}
+              onCourseUpdate={(updatedCourse) => {
+                setCourse(updatedCourse);
+                getCourseByID();
+              }}
+            />
 
-        <BasicCourseDetails
-          course={course}
-          onCourseUpdate={(updatedCourse) => {
-            setCourse(updatedCourse);
-            getCourseByID(); // refresh from backend to confirm it saved
-          }}
-        />
+            <CourseDetail course={course} />
 
-        <CourseDetail course={course} />
+            <ChapterList modules={modules} />
 
-        <ChapterList modules={modules} />
+            {/* Generate course content button, aligned to the right */}
+            <div className="flex justify-end mt-4">
+              <Button
+                onClick={handleGenerateCourse}
+                disabled={generating}
+                className="bg-[#004c6d] hover:bg-[#003d58] text-white py-3 px-8 rounded-xl font-bold transition-all shadow-md shadow-[#004c6d]/15"
+              >
+                {generating ? "Generating..." : "GENERATE COURSE CONTENT"}
+              </Button>
+            </div>
 
-        {/* Generate course content button, aligned to the right */}
-        <div className="flex justify-end mt-6">
-          <Button
-            onClick={handleGenerateCourse}
-            disabled={generating}
-            className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-6 rounded-full"
-          >
-            {generating ? "Generating..." : "GENERATE COURSE CONTENT"}
-          </Button>
-        </div>
-        <MCQBlock
-          block={{
-            type: "mcq",
-            question:
-              "Which of the following is a primary goal of affinity mapping in user r…",
-            options: ["Option A", "Option B", "Option C", "Option D"],
-            correctAnswer:
-              "To group similar observations and ideas to identify themes and pattern…",
-            explanation:
-              "Affinity mapping is a synthesis technique used to organize large amoun…",
-          }}
-        />
+          </div>
+        </main>
       </div>
+
+      {/* Premium Generating Loader Overlay */}
+      {generating && (
+        <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#0F1B3D]/80 backdrop-blur-md text-white px-6 animate-fadeIn">
+          <div className="flex flex-col items-center max-w-md text-center">
+            
+            {/* Elegant Spinning Loader Wheel */}
+            <div className="relative mb-6">
+              <Loader2 className="w-12 h-12 text-blue-500 animate-spin" />
+            </div>
+
+            <h3 className="text-xl font-extrabold tracking-tight mb-2.5 text-white">
+              Synthesizing Learning Pathway
+            </h3>
+            
+            <p className="text-slate-300 text-sm leading-relaxed mb-6 max-w-sm">
+              Our AI engines are actively compiling your personalized course materials, structuring modular chapter logs, and configuring interactive quiz assessments.
+            </p>
+
+            {/* Subtle Progress Bar */}
+            <div className="w-48 h-1 bg-slate-800 rounded-full overflow-hidden relative">
+              <div className="absolute inset-y-0 left-0 w-24 bg-blue-500 rounded-full animate-infinite-loading" />
+            </div>
+
+            <span className="text-[11px] font-semibold uppercase tracking-widest text-slate-400 mt-4">
+              Please do not close this window
+            </span>
+
+          </div>
+        </div>
+      )}
     </div>
   );
 }

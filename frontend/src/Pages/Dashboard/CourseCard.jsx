@@ -1,6 +1,6 @@
 // CourseCard.jsx
 import { useNavigate } from "react-router-dom";
-import { Clock, BarChart3, Trash2, ArrowRight, Users } from "lucide-react";
+import { Clock, BarChart3, Trash2, ArrowRight, Users, Pencil } from "lucide-react";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const SERVER_ORIGIN = BASE_URL?.replace(/\/api\/?$/, "") || "";
@@ -32,6 +32,10 @@ function CourseCard({ course, onDelete }) {
   // Central place that decides where "Get Started" goes
   const goToCourse = () => navigate(`/courses/${course._id}`);
 
+  // Edit goes to the singular "/course/:id" route
+  // (e.g. http://localhost:5173/course/6a44d1f5e81c5ff7be74d3f0)
+  const goToEditCourse = () => navigate(`/course/${course._id}`);
+
   return (
     <div
       onClick={goToCourse}
@@ -61,6 +65,20 @@ function CourseCard({ course, onDelete }) {
             {course.category}
           </span>
         )}
+
+        {/* Edit (pencil) button floating on the image, top-right */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation(); // don't trigger the card's own onClick
+            goToEditCourse();
+          }}
+          className="absolute top-3 right-3 flex items-center justify-center
+                     w-7 h-7 rounded-full bg-white/95 backdrop-blur shadow-sm
+                     text-[#0F1B3D] hover:bg-white hover:scale-105 active:scale-95 transition-all"
+          aria-label="Edit course"
+        >
+          <Pencil className="h-3.5 w-3.5" />
+        </button>
       </div>
 
       {/* Card content */}

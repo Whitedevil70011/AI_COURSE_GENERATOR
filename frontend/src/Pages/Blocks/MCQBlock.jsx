@@ -22,37 +22,27 @@ function MCQBlock({ block }) {
 
   const isCorrect = selectedOption === block.correctAnswer;
 
-  // Helper function: decides which Tailwind classes an option box should have
   function getOptionClasses(option) {
-    // Base classes every option always has
-    let classes = "px-4 py-3 mb-2 rounded-lg border cursor-pointer transition-colors ";
+    let classes = "lr-mcq-option ";
 
     if (isSubmitted) {
       if (option === block.correctAnswer) {
-        // Correct answer always shown green after submit
-        classes += "bg-green-50 border-green-500 text-green-800 cursor-default";
+        classes += "correct";
       } else if (option === selectedOption) {
-        // The wrong option the user picked
-        classes += "bg-red-50 border-red-500 text-red-800 cursor-default";
+        classes += "incorrect";
       } else {
-        // Any other option after submit — greyed out, not clickable
-        classes += "bg-white border-gray-200 text-gray-400 cursor-default";
+        classes += "disabled";
       }
     } else if (option === selectedOption) {
-      // Selected, before submitting
-      classes += "bg-blue-50 border-blue-400";
-    } else {
-      // Default, not selected, not submitted
-      classes += "bg-white border-gray-300 hover:bg-gray-50 hover:border-gray-400";
+      classes += "selected";
     }
 
     return classes;
   }
 
   return (
-    <div className="border border-gray-200 rounded-xl p-5 mb-5 bg-white shadow-sm">
-      
-      <h3 className="text-lg text-gray-900 mb-4">{block.question}</h3>
+    <div className="lr-mcq-card">
+      <h3 className="lr-mcq-question">{block.question}</h3>
 
       {block.options.map((option, index) => (
         <div
@@ -64,24 +54,21 @@ function MCQBlock({ block }) {
         </div>
       ))}
 
-      {/* Buttons before submitting */}
+      {/* Action Buttons */}
       {!isSubmitted && (
-        <div className="flex gap-3 mt-3">
+        <div className="flex gap-3 mt-4">
           <button
             onClick={handleSubmit}
             disabled={selectedOption === null}
-            className="px-5 py-2 rounded-lg font-semibold text-white bg-blue-600
-                       hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed
-                       transition-colors"
+            className="lr-mcq-btn-submit"
           >
-            Submit
+            Submit Answer
           </button>
 
           {selectedOption !== null && (
             <button
               onClick={() => setSelectedOption(null)}
-              className="px-5 py-2 rounded-lg font-semibold text-gray-700 bg-gray-100
-                         hover:bg-gray-200 transition-colors"
+              className="lr-mcq-btn-clear"
             >
               Clear Selection
             </button>
@@ -89,19 +76,18 @@ function MCQBlock({ block }) {
         </div>
       )}
 
-      {/* Result section after submitting */}
+      {/* Submitted Feedback */}
       {isSubmitted && (
-        <div className="mt-4 pt-4 border-t border-gray-100">
-          <strong className={isCorrect ? "text-green-700" : "text-red-700"}>
+        <div className="lr-mcq-result">
+          <span className={`lr-mcq-result-title ${isCorrect ? "text-emerald-600" : "text-rose-600"}`}>
             {isCorrect ? "✅ Correct!" : "❌ Incorrect"}
-          </strong>
-          <p className="mt-2 text-gray-600 leading-relaxed">{block.explanation}</p>
+          </span>
+          <p className="lr-mcq-explanation">{block.explanation}</p>
 
           {!isCorrect && (
             <button
               onClick={handleTryAgain}
-              className="mt-3 px-5 py-2 rounded-lg font-semibold text-white bg-blue-600
-                         hover:bg-blue-700 transition-colors"
+              className="lr-mcq-btn-submit mt-4"
             >
               Try Again
             </button>

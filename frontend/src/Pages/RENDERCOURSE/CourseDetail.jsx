@@ -5,46 +5,46 @@ function CourseDetail({ course }) {
   const data = course?.course ?? course;
 
   return (
-    <div className="border bg-white p-6 rounded-xl shadow-sm mt-4">
+    <div className="border-2 border-blue-100 bg-white p-5 md:p-6 rounded-2xl shadow-[0_4px_20px_-2px_rgba(59,130,246,0.02)] mt-4">
       <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
 
-        <div className="flex gap-2 items-start">
-          <HiOutlineChartBar className="text-violet-600 text-2xl mt-1 shrink-0" />
+        <div className="flex gap-2.5 items-start">
+          <HiOutlineChartBar className="text-[#004c6d] text-2xl mt-0.5 shrink-0" />
           <div>
-            <h2 className="text-xs text-gray-500">Skill Level</h2>
-            <h2 className="font-semibold text-gray-900 text-base">{data?.difficulty || "—"}</h2>
+            <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Skill Level</h2>
+            <h2 className="font-bold text-slate-800 text-sm md:text-base mt-0.5">{data?.difficulty || "—"}</h2>
           </div>
         </div>
 
-        <div className="flex gap-2 items-start">
-          <LuClock className="text-violet-600 text-2xl mt-1 shrink-0" />
+        <div className="flex gap-2.5 items-start">
+          <LuClock className="text-[#004c6d] text-2xl mt-0.5 shrink-0" />
           <div>
-            <h2 className="text-xs text-gray-500">Duration</h2>
-            <h2 className="font-semibold text-gray-900 text-base">{data?.duration || "—"}</h2>
+            <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Duration</h2>
+            <h2 className="font-bold text-slate-800 text-sm md:text-base mt-0.5">{data?.duration || "—"}</h2>
           </div>
         </div>
 
-        <div className="flex gap-2 items-start">
-          <LuBookOpen className="text-violet-600 text-2xl mt-1 shrink-0" />
+        <div className="flex gap-2.5 items-start">
+          <LuBookOpen className="text-[#004c6d] text-2xl mt-0.5 shrink-0" />
           <div>
-            <h2 className="text-xs text-gray-500">Topic</h2>
-            <h2 className="font-semibold text-gray-900 text-base">{data?.topic || "—"}</h2>
+            <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Topic</h2>
+            <h2 className="font-bold text-slate-800 text-sm md:text-base mt-0.5">{data?.topic || "—"}</h2>
           </div>
         </div>
 
-        <div className="flex gap-2 items-start">
-          <LuCirclePlay className="text-violet-600 text-2xl mt-1 shrink-0" />
+        <div className="flex gap-2.5 items-start">
+          <LuCirclePlay className="text-[#004c6d] text-2xl mt-0.5 shrink-0" />
           <div>
-            <h2 className="text-xs text-gray-500">Category</h2>
-            <h2 className="font-semibold text-gray-900 text-base">{data?.category || "—"}</h2>
+            <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Category</h2>
+            <h2 className="font-bold text-slate-800 text-sm md:text-base mt-0.5">{data?.category || "—"}</h2>
           </div>
         </div>
 
-        <div className="flex gap-2 items-start">
-          <LuLayoutList className="text-violet-600 text-2xl mt-1 shrink-0" />
+        <div className="flex gap-2.5 items-start col-span-2 md:col-span-1">
+          <LuLayoutList className="text-[#004c6d] text-2xl mt-0.5 shrink-0" />
           <div>
-            <h2 className="text-xs text-gray-500">Modules</h2>
-            <h2 className="font-semibold text-gray-900 text-base">
+            <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Modules</h2>
+            <h2 className="font-bold text-slate-800 text-sm md:text-base mt-0.5">
               {Array.isArray(data?.modules) ? data.modules.length : "—"}
             </h2>
           </div>

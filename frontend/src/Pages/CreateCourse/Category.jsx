@@ -10,115 +10,59 @@ function Category({ onSelect }) {
   const selected = userInput?.category;
 
   const cate = [
-    { id: 1, name: "Programming", image: programmingImg },
-    { id: 2, name: "Study", image: studyImg },
-    { id: 3, name: "Design", image: designImg },
-    { id: 4, name: "Health", image: healthImg },
+    { id: 1, name: "Programming", image: programmingImg, tint: "#eef2ff", ring: "#6366f1" },
+    { id: 2, name: "Study", image: studyImg, tint: "#fef3c7", ring: "#d97706" },
+    { id: 3, name: "Design", image: designImg, tint: "#fce7f3", ring: "#db2777" },
+    { id: 4, name: "Health", image: healthImg, tint: "#dcfce7", ring: "#16a34a" },
   ];
 
-  // const handleSelect = (id) => {
-  //   setSelected(id);
-  //   if (onSelect) onSelect(id);
-  // };
   const handleCategory = (category) => {
     setUserInput((prevInput) => ({
       ...(prevInput || {}),
       category: category,
     }));
     if (onSelect) onSelect(category);
-
-
-  }
+  };
 
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(4, 1fr)",
-        gap: "20px",
-        width: "100%",
-        marginTop: "8px",
-      }}
-    >
+    <div className="cc-category-grid">
       {cate.map((item) => {
         const isSelected = selected === item.name;
         return (
-          <div
+          <button
             key={item.id}
+            type="button"
             onClick={() => handleCategory(item.name)}
+            className={`cc-category-card ${isSelected ? "selected" : ""}`}
             style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "10px",
-              padding: "20px 12px 16px",
-              borderRadius: "16px",
-              border: isSelected ? "2px solid #7c3aed" : "2px solid #e5e7eb",
-              background: isSelected
-                ? "linear-gradient(135deg,#ede9fe 0%,#f5f3ff 100%)"
-                : "#ffffff",
-              boxShadow: isSelected
-                ? "0 0 0 3px rgba(124,58,237,0.15), 0 4px 20px rgba(124,58,237,0.14)"
-                : "0 2px 10px rgba(0,0,0,0.07)",
-              cursor: "pointer",
-              transition: "all 0.22s cubic-bezier(.4,0,.2,1)",
-              transform: isSelected ? "scale(1.04)" : "scale(1)",
-              minHeight: "140px",
-              overflow: "hidden",
-            }}
-            onMouseEnter={(e) => {
-              if (!isSelected) {
-                e.currentTarget.style.boxShadow = "0 6px 20px rgba(124,58,237,0.13)";
-                e.currentTarget.style.borderColor = "#c4b5fd";
-                e.currentTarget.style.transform = "scale(1.03)";
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!isSelected) {
-                e.currentTarget.style.boxShadow = "0 2px 10px rgba(0,0,0,0.07)";
-                e.currentTarget.style.borderColor = "#e5e7eb";
-                e.currentTarget.style.transform = "scale(1)";
-              }
+              "--card-ring": item.ring,
+              "--card-tint": item.tint,
             }}
           >
-            {/* Fixed image container so images don't overflow */}
             <div
-              style={{
-                width: "72px",
-                height: "72px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-              }}
+              className="cc-category-icon-tile"
+              style={{ backgroundColor: item.tint }}
             >
               <img
                 src={item.image}
                 alt={item.name}
-                style={{
-                  width: "72px",
-                  height: "72px",
-                  objectFit: "contain",
-                  display: "block",
-                }}
+                className="cc-category-icon-img"
               />
             </div>
 
             <span
-              style={{
-                fontSize: "13px",
-                fontWeight: "600",
-                color: isSelected ? "#6d28d9" : "#374151",
-                letterSpacing: "0.01em",
-                textAlign: "center",
-                wordBreak: "break-word",
-                width: "100%",
-              }}
+              className="cc-category-name"
+              style={{ color: isSelected ? item.ring : undefined }}
             >
               {item.name}
             </span>
-          </div>
+
+            {isSelected && (
+              <span className="cc-category-check" style={{ background: item.ring }}>
+                ✓
+              </span>
+            )}
+          </button>
         );
       })}
     </div>

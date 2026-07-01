@@ -20,42 +20,31 @@ function TopicDescription() {
     };
 
     return (
-        <div
-            style={{
-                display: "grid",
-                gap: "20px",
-                width: "100%",
-                maxWidth: "760px",
-                margin: "0 auto",
-                padding: "28px",
-                borderRadius: "24px",
-                border: "1px solid #e9d5ff",
-                background: "rgba(255,255,255,0.85)",
-                boxShadow: "0 18px 50px rgba(124,58,237,0.08)",
-                textAlign: "left",
-            }}
-        >
-            <div style={{ display: "grid", gap: "8px" }}>
-                <label style={{ fontSize: "14px", fontWeight: 700, color: "#1f2937" }}>
-                    Enter your topic
+        <div className="cc-topic-container">
+            <div className="cc-topic-field">
+                <label className="cc-topic-label">
+                    ✏️ Enter your topic
                 </label>
+                <p className="cc-topic-hint">What subject would you like to create a course about?</p>
                 <Input
-                    placeholder="Topic"
+                    placeholder="e.g. Python Programming, Digital Marketing, Machine Learning..."
                     value={userInput?.topic || ""}
                     onChange={(e) => handleTopicChange("topic", e.target.value)}
+                    className="cc-topic-input"
                 />
             </div>
 
-            <div style={{ display: "grid", gap: "8px" }}>
-                <label style={{ fontSize: "14px", fontWeight: 700, color: "#1f2937" }}>
-                    Tell us more about what you want to include in the course
+            <div className="cc-topic-field">
+                <label className="cc-topic-label">
+                    📝 Tell us more about your course
                 </label>
-
+                <p className="cc-topic-hint">Describe what you'd like to cover. The more detail, the better the AI output.</p>
                 <Textarea
-                    placeholder="Course description"
+                    placeholder="Describe the key topics, target audience, learning goals..."
                     rows={6}
                     value={userInput?.description || ""}
                     onChange={(e) => handleDescriptionChange("description", e.target.value)}
+                    className="cc-topic-textarea"
                 />
             </div>
         </div>

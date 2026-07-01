@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-
 import LessonRenderer from './LessonRenderer'
+import CourseSidebar from './Course/CourseSidebar'
+import Header from '../_components/Header'
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL
 
@@ -10,6 +11,8 @@ function LessonDetail() {
   const navigate = useNavigate()
 
   const [lesson, setLesson] = useState(null)
+  const [course, setCourse] = useState(null)
+  const [modules, setModules] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -19,6 +22,14 @@ function LessonDetail() {
       throw new Error(`Failed: ${response.status}`)
     }
 
+    return response.json()
+  }
+
+  async function loadCourse() {
+    const response = await fetch(`${BASE_URL}/courses/${courseId}`)
+    if (!response.ok) {
+      throw new Error(`Failed: ${response.status}`)
+    }
     return response.json()
   }
 
@@ -45,11 +56,17 @@ function LessonDetail() {
     async function fetchLesson() {
       try {
         setLoading(true)
-        const data = await loadLesson()
+        const [data, courseData] = await Promise.all([
+          loadLesson(),
+          loadCourse()
+        ])
+        
         const lessonData = await enrichLessonVideoIfNeeded(data)
 
         if (!cancelled) {
           setLesson(lessonData)
+          setCourse(courseData.course || courseData)
+          setModules(courseData.modules || courseData.course?.modules || [])
           setError(null)
         }
       } catch (err) {
@@ -95,24 +112,46 @@ function LessonDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F4F7FC] px-6 py-6 md:px-10">
-      <div className="mb-5 flex items-center justify-between gap-4">
-        <button
-          type="button"
-          onClick={() => navigate(`/courses/${courseId}`)}
-          className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:border-slate-300"
-        >
-          Back to course
-        </button>
-        {lesson.module?.title ? (
-          <div className="text-sm text-slate-500">
-            Module: <span className="font-semibold text-slate-700">{lesson.module.title}</span>
-          </div>
-        ) : null}
-      </div>
+    <div className="flex flex-col min-h-screen bg-[#F4F7FC]">
+      <Header />
+      
+      <div className="flex flex-1 w-full min-h-[calc(100vh-73px)]">
+        {/* Course Navigation Sidebar */}
+        <CourseSidebar
+          course={course}
+          modules={modules}
+          activeLessonId={lessonId}
+          courseId={courseId}
+        />
 
-      <div className="rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <LessonRenderer lesson={lesson} />
+        {/* Main Content Area */}
+        <main className="flex-1 min-w-0 px-8 py-8 md:px-12 overflow-y-auto h-[calc(100vh-73px)]">
+          <div className="max-w-[1200px] w-full">
+            
+            {/* Header breadcrumb/navigation */}
+            <div className="mb-5 flex items-center justify-between gap-4">
+              <button
+                type="button"
+                onClick={() => navigate(`/courses/${courseId}`)}
+                className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:border-slate-300 hover:bg-slate-50 transition-colors shadow-xs"
+              >
+                Course Overview
+              </button>
+              
+              {lesson.module?.title ? (
+                <div className="text-sm text-slate-500">
+                  Module: <span className="font-semibold text-slate-750">{lesson.module.title}</span>
+                </div>
+              ) : null}
+            </div>
+
+            {/* Lesson Content Container */}
+            <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+              <LessonRenderer lesson={lesson} />
+            </div>
+
+          </div>
+        </main>
       </div>
     </div>
   )

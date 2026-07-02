@@ -27,7 +27,7 @@ const steps = [
 export function HowItWorks() {
   return (
     <section id="how-it-works" className="relative py-20 sm:py-28">
-      <div className="pointer-events-none absolute left-1/2 top-1/3 size-[28rem] -translate-x-1/2 rounded-full bg-accent/8 blur-[130px]" />
+      <div className="pointer-events-none absolute left-1/2 top-1/3 size-112 -translate-x-1/2 rounded-full bg-accent/8 blur-[130px]" />
       <div className="relative mx-auto max-w-3xl px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -43,7 +43,6 @@ export function HowItWorks() {
         </motion.div>
 
         <div className="relative mt-16">
-          {/* vertical line */}
           <div className="absolute left-6 top-2 bottom-2 w-px bg-border sm:left-8" aria-hidden="true" />
 
           <div className="space-y-10">

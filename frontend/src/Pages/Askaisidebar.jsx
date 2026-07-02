@@ -1,21 +1,45 @@
 // AskAiSidebar.jsx
 // A simple "Ask AI" chat panel. Click the round button to open it.
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Bot, X, ArrowRight } from "lucide-react";
 
-const BACKEND_URL = "http://localhost:3001/api/ask-ai";
+// Use a relative path by default so this works wherever the app is deployed.
+// Override with a Vite env var when you actually need a different host.
+const BACKEND_URL = import.meta.env.VITE_ASK_AI_URL || "/api/ask-ai";
 
 function AskAiSidebar({ lessonTitle, lessonContent }) {
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const firstMessage = {
     role: "assistant",
     content: "Hi! Ask me a doubt about this lesson.",
   };
   const [messages, setMessages] = useState([firstMessage]);
+
+  const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, isLoading]);
+
+  // Safety net: Escape always closes the panel, even if the close
+  // button is ever visually hidden by something else on the page.
+  useEffect(() => {
+    if (!isOpen) return;
+
+    function handleEscape(event) {
+      if (event.key === "Escape") {
+        setIsOpen(false);
+      }
+    }
+
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [isOpen]);
 
   function openPanel() {
     setIsOpen(true);
@@ -28,7 +52,7 @@ function AskAiSidebar({ lessonTitle, lessonContent }) {
   async function handleSend() {
     const question = inputValue.trim();
 
-    if (question === "") {
+    if (question === "" || isLoading) {
       return;
     }
 
@@ -38,28 +62,44 @@ function AskAiSidebar({ lessonTitle, lessonContent }) {
     setMessages(newMessages);
     setInputValue("");
     setIsLoading(true);
+    setErrorMessage(null);
 
-    // ask the backend for a reply
-    const response = await fetch(BACKEND_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        lessonTitle: lessonTitle,
-        lessonContent: lessonContent,
-        history: newMessages,
-      }),
-    });
+    try {
+      // ask the backend for a reply
+      const response = await fetch(BACKEND_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          lessonTitle: lessonTitle,
+          lessonContent: lessonContent,
+          history: newMessages,
+        }),
+      });
 
-    const data = await response.json();
+      if (!response.ok) {
+        throw new Error(`Server responded with status ${response.status}`);
+      }
 
-    // add the AI's reply to the chat
-    const aiMessage = { role: "assistant", content: data.reply };
-    setMessages([...newMessages, aiMessage]);
-    setIsLoading(false);
+      const data = await response.json();
+
+      if (!data || typeof data.reply !== "string") {
+        throw new Error("Response was missing a reply.");
+      }
+
+      // add the AI's reply to the chat
+      const aiMessage = { role: "assistant", content: data.reply };
+      setMessages((prev) => [...prev, aiMessage]);
+    } catch (error) {
+      console.error("Ask AI request failed:", error);
+      setErrorMessage("Sorry, something went wrong. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   function handleKeyDown(event) {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
       handleSend();
     }
   }
@@ -70,19 +110,29 @@ function AskAiSidebar({ lessonTitle, lessonContent }) {
       {!isOpen && (
         <button
           onClick={openPanel}
-          className="fixed bottom-6 right-6 h-16 w-16 rounded-full bg-indigo-600 text-white flex items-center justify-center shadow-xl hover:bg-indigo-700"
+          className="fixed bottom-6 right-6 h-16 w-16 rounded-full bg-indigo-600 text-white flex items-center justify-center shadow-xl hover:bg-indigo-700 z-[9999]"
+          aria-label="Open Ask AI chat"
         >
           <Bot size={32} />
         </button>
       )}
 
+      {/* backdrop: click outside the panel to close it */}
+      {isOpen && (
+        <div
+          onClick={closePanel}
+          className="fixed inset-0 bg-black/20 z-[9998]"
+          aria-hidden="true"
+        />
+      )}
+
       {/* chat panel */}
       {isOpen && (
-        <div className="fixed top-0 right-0 bottom-0 w-80 bg-white border-l border-slate-200 flex flex-col shadow-lg">
+        <div className="fixed top-0 right-0 bottom-0 w-80 bg-white border-l border-slate-200 flex flex-col shadow-lg z-[9999]">
           {/* header */}
           <div className="flex items-center justify-between p-4 border-b border-slate-200">
             <span className="font-semibold text-slate-800">Ask AI</span>
-            <button onClick={closePanel}>
+            <button onClick={closePanel} aria-label="Close Ask AI chat">
               <X size={18} />
             </button>
           </div>
@@ -108,6 +158,12 @@ function AskAiSidebar({ lessonTitle, lessonContent }) {
             {isLoading && (
               <div className="self-start bg-slate-100 text-slate-800 rounded-lg px-3 py-2 text-sm">Thinking...</div>
             )}
+
+            {errorMessage && (
+              <div className="self-start bg-red-50 text-red-700 rounded-lg px-3 py-2 text-sm">{errorMessage}</div>
+            )}
+
+            <div ref={messagesEndRef} />
           </div>
 
           {/* input */}
@@ -118,9 +174,15 @@ function AskAiSidebar({ lessonTitle, lessonContent }) {
               onChange={(event) => setInputValue(event.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Ask a doubt..."
-              className="flex-1 border border-slate-200 rounded-lg px-3 py-2 text-sm"
+              disabled={isLoading}
+              className="flex-1 border border-slate-200 rounded-lg px-3 py-2 text-sm disabled:opacity-50"
             />
-            <button onClick={handleSend} className="w-10 border border-slate-200 rounded-lg flex items-center justify-center">
+            <button
+              onClick={handleSend}
+              disabled={isLoading || inputValue.trim() === ""}
+              className="w-10 border border-slate-200 rounded-lg flex items-center justify-center disabled:opacity-50"
+              aria-label="Send message"
+            >
               <ArrowRight size={16} />
             </button>
           </div>

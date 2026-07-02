@@ -1,4 +1,5 @@
 
+import React from 'react'
 import { useAuth0 } from '@auth0/auth0-react'
 import { Navigate } from 'react-router-dom'
 
@@ -12,7 +13,7 @@ if(isLoading) {
 if(isAuthenticated) {
     return children
 
-}else  return <Navigate to="/" replace />
+}else  return <Navigate to="/" />
 
 }
 

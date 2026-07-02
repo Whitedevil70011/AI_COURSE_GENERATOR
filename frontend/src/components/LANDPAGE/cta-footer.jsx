@@ -1,5 +1,6 @@
 "use client"
 
+import { motion } from "motion/react"
 import { ArrowRight, GraduationCap, Send, Rss, Globe } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
@@ -21,9 +22,16 @@ const footerNav = [
 export function CtaFooter() {
   return (
     <footer className="relative">
+      {/* CTA */}
       <section id="pricing" className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
-        <div className="relative overflow-hidden rounded-3xl border border-border/70 bg-card/60 px-6 py-14 text-center backdrop-blur-xl sm:px-12">
-          <div className="pointer-events-none absolute -top-24 left-1/2 size-96 -translate-x-1/2 rounded-full bg-primary/20 blur-[100px]" />
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6 }}
+          className="relative overflow-hidden rounded-3xl border border-border/70 bg-card/60 px-6 py-14 text-center backdrop-blur-xl sm:px-12"
+        >
+          <div className="pointer-events-none absolute -top-24 left-1/2 size-[24rem] -translate-x-1/2 rounded-full bg-primary/20 blur-[100px]" />
           <div className="relative">
             <h2 className="mx-auto max-w-xl font-heading text-3xl font-bold tracking-tight text-balance sm:text-4xl">
               Start building your first course today
@@ -41,9 +49,10 @@ export function CtaFooter() {
               </Button>
             </div>
           </div>
-        </div>
+        </motion.div>
       </section>
 
+      {/* Footer */}
       <div className="border-t border-border/60">
         <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
           <div className="grid gap-10 md:grid-cols-[1.5fr_1fr_1fr_1fr]">

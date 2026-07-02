@@ -1,25 +1,51 @@
-import { SiteHeader } from './components/LANDPAGE/site-header'
-import { Hero } from './components/LANDPAGE/hero'
-import { VideoDemo } from './components/LANDPAGE/vide-demo'
-import { Features } from './components/LANDPAGE/features'
-import { HowItWorks } from './components/LANDPAGE/how-it-woek'
-import { CtaFooter } from './components/LANDPAGE/cta-footer'
+import { useAuth0 } from '@auth0/auth0-react'
+import { useEffect } from 'react'
 
 function App() {
-  return (
-    <div className="min-h-screen bg-[#09090b] text-white">
-      <div className="relative isolate overflow-hidden">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.12),transparent_34%),radial-gradient(circle_at_center,rgba(255,255,255,0.05),transparent_48%)]" />
-        <SiteHeader />
-        <main id="top">
-          <Hero />
-          <VideoDemo />
-          <Features />
-          <HowItWorks />
-          <CtaFooter />
-        </main>
-      </div>
-    </div>
+  const {
+    isLoading,
+    isAuthenticated,
+    error,
+    loginWithRedirect,
+    logout,
+    user,
+    getAccessTokenSilently
+  } = useAuth0()
+
+  // Silent token refresh — works on page reload
+  useEffect(() => {
+    if (isAuthenticated) {
+      const fetchToken = async () => {
+        try {
+          const token = await getAccessTokenSilently()
+          console.log('JWT ready:', token)   // remove in production
+        } catch (err) {
+          console.error('Token error:', err)
+        }
+      }
+      fetchToken()
+    }
+  }, [isAuthenticated, getAccessTokenSilently])
+
+  if (isLoading) return <p>Loading...</p>
+  if (error) return <p>Error: {error.message}</p>
+
+  return isAuthenticated ? (
+    <>
+      <p>Welcome, {user.email}</p>
+      <button onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}>
+        Logout
+      </button>
+    </>
+  ) : (
+    <>
+      <button onClick={() => loginWithRedirect()}>Login</button>
+      <button onClick={() => loginWithRedirect({
+        authorizationParams: { screen_hint: 'signup' }
+      })}>
+        Signup
+      </button>
+    </>
   )
 }
 

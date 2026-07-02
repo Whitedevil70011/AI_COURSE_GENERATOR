@@ -13,9 +13,6 @@ function Sidebar({ isCollapsed, onToggle }) {
     { id: 4, name: "Logout", icon: <IoLogOut />, path: "/dashboard/logout" }
   ];
 
-    function handleLogout() {
-    logout({ logoutParams: { returnTo: window.location.origin } })
-  }
   return (
     <div className={`relative flex h-full min-h-[calc(100vh-73px)] flex-col transition-all duration-300 ${isCollapsed ? "p-3 py-6 gap-6 items-center" : "p-5 lg:p-6 gap-6"}`}>
       {/* Toggle button */}

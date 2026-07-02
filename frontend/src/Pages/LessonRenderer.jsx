@@ -8,7 +8,7 @@ import MCQBlock from "./Blocks/MCQBlock.jsx";
 import LessonPDFExporter from "./LessonPDFExporter";
 import { BookOpen, Sparkles, BookOpenCheck } from "lucide-react";
 import "./LessonRenderer.css";
-
+import AskAiSidebar from "./AskAiSidebar";
 const blockComponentMap = {
   heading: HeadingBlock,
   paragraph: ParagraphBlock,
@@ -134,6 +134,7 @@ function LessonRenderer({ lesson }) {
           <LessonPDFExporter lesson={lesson} />
         </div>
       </main>
+       <AskAiSidebar lessonTitle={title} lessonContent={JSON.stringify(lessonContent)} />
     </div>
   );
 }

@@ -11,6 +11,24 @@ function Dashboard() {
   const { user, isLoading: authLoading } = useAuth0();
   const [courses, setCourses] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
+const onDeleteCourse = (courseId) => {
+  const previousCourses = courses; // save for rollback
+  setCourses((prevCourses) => prevCourses.filter((course) => course._id !== courseId));
+
+  fetch(`${BASE_URL}/courses/${courseId}`, {
+    method: "DELETE",
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to delete course");
+      }
+      console.log(`Course with ID ${courseId} deleted successfully.`);
+    })
+    .catch((error) => {
+      console.error("Error deleting course:", error);
+      setCourses(previousCourses); // rollback UI on failure
+    });
+};
 
   React.useEffect(() => {
     if (authLoading) return;
@@ -83,6 +101,7 @@ function Dashboard() {
                     duration: course.duration || "N/A",
                     difficulty: course.difficulty || "Beginner",
                   }}
+                  onDelete={onDeleteCourse}
                 />
               ))}
             </div>

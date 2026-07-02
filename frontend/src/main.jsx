@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { Auth0Provider } from "@auth0/auth0-react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import App from "./App";
 import Dashboard from "./Pages/Dashboard/page";
 import CreateCourse from "./Pages/CreateCourse/CreateCourse";
@@ -74,6 +74,7 @@ createRoot(document.getElementById("root")).render(
               </ProtectedRoute>
             }
           />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
     </Auth0Provider>

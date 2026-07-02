@@ -34,7 +34,7 @@ function LessonDetail() {
   }
 
   async function enrichLessonVideoIfNeeded(lessonData) {
-    if (lessonData?.videoUrl || !lessonData?.videoSearchQuery) {
+    if (lessonData?.isEnriched || !lessonData?.videoSearchQuery) {
       return lessonData
     }
 

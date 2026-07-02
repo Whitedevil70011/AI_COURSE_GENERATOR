@@ -8,7 +8,8 @@ import MCQBlock from "./Blocks/MCQBlock.jsx";
 import LessonPDFExporter from "./LessonPDFExporter";
 import { BookOpen, Sparkles, BookOpenCheck } from "lucide-react";
 import "./LessonRenderer.css";
-
+import AskAiSidebar from "./Askaisidebar.jsx";
+import { useState } from "react";
 const blockComponentMap = {
   heading: HeadingBlock,
   paragraph: ParagraphBlock,
@@ -28,6 +29,19 @@ function LessonRenderer({ lesson }) {
   const title = lesson.title;
   const objectives = lesson.objectives;
   const isEnriched = lesson.isEnriched;
+  const [completed, setCompleted] = useState(lesson.completed || false);
+
+  async function handleMarkComplete() {
+    try {
+      const res = await fetch(`/api/lessons/${lesson._id}/complete`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      if (res.ok) setCompleted(true);
+    } catch (err) {
+      console.error("Failed to mark lesson complete:", err);
+    }
+  }
 
   let lessonContent = [];
   if (Array.isArray(lesson.content)) {
@@ -85,12 +99,14 @@ function LessonRenderer({ lesson }) {
           <span>Curriculum Lesson</span>
         </div>
         <h1 className="lr-title">{title}</h1>
-        
+
         <div className="lr-meta">
           {lesson.module?.title && (
             <div className="lr-meta-item">
               <span className="text-slate-400">Module:</span>
-              <span className="font-semibold text-slate-700">{lesson.module.title}</span>
+              <span className="font-semibold text-slate-700">
+                {lesson.module.title}
+              </span>
             </div>
           )}
           <div className="lr-meta-item">
@@ -130,9 +146,45 @@ function LessonRenderer({ lesson }) {
         </div>
 
         {/* Export / Footer section */}
-        <div className="lr-footer">
+        {/* <div className="lr-footer">
+          <LessonPDFExporter lesson={lesson} />
+        </div> */}
+        <div className="lr-footer flex items-center !justify-between w-full">
+          <button
+            onClick={handleMarkComplete}
+            disabled={completed}
+            className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all active:scale-[0.98] ${
+              completed
+                ? "bg-green-600 text-white cursor-default"
+                : "bg-slate-900 text-white hover:bg-slate-800"
+            }`}
+          >
+            {completed ? (
+              <>
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                Completed
+              </>
+            ) : (
+              "Mark as complete"
+            )}
+          </button>
+
           <LessonPDFExporter lesson={lesson} />
         </div>
+
+        <AskAiSidebar lessonTitle={title} lessonContent={lessonContent} />
       </main>
     </div>
   );

@@ -4,12 +4,18 @@
 
 const express = require("express");
 const router = express.Router();
-
-const { getLessonById, enrichLessonVideo } = require("../controllers/lessonController");
+//const { markLessonComplete } = require("../controllers/lessonController");
+// router.post("/lessons/:lessonId/complete", markLessonComplete);
+const {
+  getLessonById,
+  enrichLessonVideo,
+  markLessonComplete,
+} = require("../controllers/lessonController");
 
 router.get("/:lessonId", getLessonById);
 
 // When a POST request hits this URL, run the enrichLessonVideo function
 router.post("/:lessonId/enrich-video", enrichLessonVideo);
+router.put("/:lessonId/complete", markLessonComplete);
 
 module.exports = router;

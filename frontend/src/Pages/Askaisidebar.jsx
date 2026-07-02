@@ -6,7 +6,11 @@ import { Bot, X, ArrowRight } from "lucide-react";
 
 // Use a relative path by default so this works wherever the app is deployed.
 // Override with a Vite env var when you actually need a different host.
-const BACKEND_URL = import.meta.env.VITE_ASK_AI_URL || "/api/ask-ai";
+const BACKEND_URL =
+  import.meta.env.VITE_ASK_AI_URL ||
+  (import.meta.env.VITE_API_BASE_URL
+    ? `${import.meta.env.VITE_API_BASE_URL}/ask-ai`
+    : "/api/ask-ai");
 
 function AskAiSidebar({ lessonTitle, lessonContent }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -110,7 +114,7 @@ function AskAiSidebar({ lessonTitle, lessonContent }) {
       {!isOpen && (
         <button
           onClick={openPanel}
-          className="fixed bottom-6 right-6 z-9999 flex h-16 w-16 items-center justify-center rounded-full bg-indigo-600 text-white shadow-xl hover:bg-indigo-700"
+          className="fixed bottom-6 right-6 z-[9999] flex h-16 w-16 items-center justify-center rounded-full bg-indigo-600 text-white shadow-xl hover:bg-indigo-700"
           aria-label="Open Ask AI chat"
         >
           <Bot size={32} />
@@ -121,14 +125,14 @@ function AskAiSidebar({ lessonTitle, lessonContent }) {
       {isOpen && (
         <div
           onClick={closePanel}
-          className="fixed inset-0 z-9998 bg-black/20"
+          className="fixed inset-0 z-[9998] bg-black/20"
           aria-hidden="true"
         />
       )}
 
       {/* chat panel */}
       {isOpen && (
-        <div className="fixed top-0 right-0 bottom-0 z-9999 flex w-80 flex-col border-l border-slate-200 bg-white shadow-lg">
+        <div className="fixed top-0 right-0 bottom-0 z-[9999] flex w-80 flex-col border-l border-slate-200 bg-white shadow-lg">
           {/* header */}
           <div className="flex items-center justify-between p-4 border-b border-slate-200">
             <span className="font-semibold text-slate-800">Ask AI</span>

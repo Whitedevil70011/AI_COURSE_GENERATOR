@@ -1,5 +1,6 @@
 import { useAuth0 } from '@auth0/auth0-react'
 import { useEffect } from 'react'
+import { Hero } from './components/LANDPAGE/hero'
 
 function App() {
   const {
@@ -39,12 +40,25 @@ function App() {
     </>
   ) : (
     <>
-      <button onClick={() => loginWithRedirect()}>Login</button>
-      <button onClick={() => loginWithRedirect({
-        authorizationParams: { screen_hint: 'signup' }
-      })}>
-        Signup
-      </button>
+      <Hero />
+      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+        <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-end">
+          <button
+            className="rounded-full bg-primary px-6 py-3 text-white hover:bg-primary/90"
+            onClick={() => loginWithRedirect()}
+          >
+            Login
+          </button>
+          <button
+            className="rounded-full border border-border bg-transparent px-6 py-3 text-muted-foreground hover:bg-secondary"
+            onClick={() => loginWithRedirect({
+              authorizationParams: { screen_hint: 'signup' }
+            })}
+          >
+            Signup
+          </button>
+        </div>
+      </div>
     </>
   )
 }

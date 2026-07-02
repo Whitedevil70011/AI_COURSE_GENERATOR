@@ -7,10 +7,10 @@ const cors = require('cors');
 const connectDB = require('./utils/db');
 const courseRoutes = require('./routes/courseRoutes');
 const userRoutes = require('./routes/userRoutes');
-
+const askAiRoutes = require("./routes/Askairoutes");
 const app = express();
 connectDB();
-
+// const lessonRoutes = require("./routes/lessonRoutes");
 app.use(cors());
 app.use(express.json());
 
@@ -24,6 +24,9 @@ app.use('/api/courses', courseRoutes);
 app.use('/api/users', userRoutes);
 const lessonRoutes = require("./routes/lessonRoutes");
 app.use("/api/lessons", lessonRoutes);
+
+
+app.use("/api", askAiRoutes);   // → POST /api/ask-ai
 
 // 404 fallback
 app.use((req, res) => {

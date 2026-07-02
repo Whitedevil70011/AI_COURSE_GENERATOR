@@ -153,6 +153,7 @@ async function markLessonComplete(req, res) {
       return res.status(404).json({ message: "Lesson not found" });
     }
     lesson.completed = true;
+    lesson.completedAt = new Date();
     await lesson.save();
     res.status(200).json({ message: "Lesson marked as complete" });
   } catch (error) {

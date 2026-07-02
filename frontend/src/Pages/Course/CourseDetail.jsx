@@ -7,6 +7,7 @@ import CourseTabs from "./CourseTabs.jsx";
 import TopicAccordion from "./TopicAccordion";
 import CourseSidebar from "./CourseSidebar";
 import Header from "../../_components/Header";
+import AskAiSidebar from "../Askaisidebar.jsx";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -197,6 +198,7 @@ function CourseDetail() {
           </div>
         </main>
       </div>
+       {/* //<AskAiSidebar lessonTitle={[]} lessonContent={lessonContent} /> */}
     </div>
   );
 }

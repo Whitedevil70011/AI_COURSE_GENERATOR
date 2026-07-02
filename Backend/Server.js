@@ -8,13 +8,13 @@ const connectDB = require('./utils/db');
 const courseRoutes = require('./routes/courseRoutes');
 const userRoutes = require('./routes/userRoutes');
 const askAiRoutes = require("./routes/Askairoutes");
+const lessonAudioRoutes = require("./routes/lessonAudio.routes");
+
 const app = express();
 connectDB();
-// const lessonRoutes = require("./routes/lessonRoutes");
 app.use(cors());
 app.use(express.json());
 
-// Serve static files from uploads directory
 const uploadsPath = require('path').join(__dirname, 'uploads');
 console.log('📁 Static uploads path:', uploadsPath);
 app.use('/uploads', express.static(uploadsPath));
@@ -24,11 +24,10 @@ app.use('/api/courses', courseRoutes);
 app.use('/api/users', userRoutes);
 const lessonRoutes = require("./routes/lessonRoutes");
 app.use("/api/lessons", lessonRoutes);
+app.use("/api/lessons", lessonAudioRoutes);   // ← ADD THIS LINE (becomes /api/lessons/audio)
 
+app.use("/api", askAiRoutes);
 
-app.use("/api", askAiRoutes);   // → POST /api/ask-ai
-
-// 404 fallback
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });

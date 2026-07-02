@@ -6,10 +6,12 @@ import CodeBlock from "./Blocks/CodeBlock.jsx";
 import VideoBlock from "./Blocks/VideoBlock.jsx";
 import MCQBlock from "./Blocks/MCQBlock.jsx";
 import LessonPDFExporter from "./LessonPDFExporter";
+import LessonAudioPlayer from "./Blocks/LessonAudioPlayer.jsx";
 import { BookOpen, Sparkles, BookOpenCheck } from "lucide-react";
 import "./LessonRenderer.css";
 import AskAiSidebar from "./Askaisidebar.jsx";
 import { useState } from "react";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
 const blockComponentMap = {
   heading: HeadingBlock,
   paragraph: ParagraphBlock,
@@ -33,11 +35,15 @@ function LessonRenderer({ lesson }) {
 
   async function handleMarkComplete() {
     try {
-      const res = await fetch(`/api/lessons/${lesson._id}/complete`, {
+      const res = await fetch(`${BASE_URL}/lessons/${lesson._id}/complete`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       });
-      if (res.ok) setCompleted(true);
+      if (res.ok) {
+        setCompleted(true);
+      } else {
+        console.error("Failed to mark lesson complete:", res.status, await res.text());
+      }
     } catch (err) {
       console.error("Failed to mark lesson complete:", err);
     }
@@ -146,10 +152,7 @@ function LessonRenderer({ lesson }) {
         </div>
 
         {/* Export / Footer section */}
-        {/* <div className="lr-footer">
-          <LessonPDFExporter lesson={lesson} />
-        </div> */}
-        <div className="lr-footer flex items-center !justify-between w-full">
+        <div className="lr-footer flex items-center justify-between! w-full">
           <button
             onClick={handleMarkComplete}
             disabled={completed}
@@ -180,6 +183,12 @@ function LessonRenderer({ lesson }) {
               "Mark as complete"
             )}
           </button>
+
+          {/* Hinglish audio player - converts lesson to Hinglish and plays audio */}
+          <div>
+<LessonAudioPlayer lessonContent={lessonContent} lessonTitle={title} />
+          </div>
+          
 
           <LessonPDFExporter lesson={lesson} />
         </div>

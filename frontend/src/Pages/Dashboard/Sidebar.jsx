@@ -1,11 +1,14 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
 import { IoHomeOutline, IoShieldOutline, IoLogOut } from "react-icons/io5";
 import { RiStackFill } from "react-icons/ri";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Progress } from "../../components/ui/progress";
 
 function Sidebar({ isCollapsed, onToggle }) {
+  const { logout } = useAuth0();
+
   const menuItems = [
     { id: 1, name: "Home", icon: <IoHomeOutline />, path: "/dashboard" },
     { id: 2, name: "Create Course", icon: <RiStackFill />, path: "/create-course" },
@@ -46,31 +49,54 @@ function Sidebar({ isCollapsed, onToggle }) {
       <ul className="flex flex-col gap-2 w-full">
         {menuItems.map((item) => (
           <li key={item.id} className="w-full">
-            <NavLink
-              to={item.path}
-              end={item.path === "/dashboard"}
-              className={({ isActive }) =>
-                [
-                  "group relative flex items-center transition-all duration-200",
+            {item.name === "Logout" ? (
+              <button
+                onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
+                className={[
+                  "group relative flex items-center transition-all duration-200 cursor-pointer w-full text-left",
                   isCollapsed
                     ? "h-12 w-12 justify-center mx-auto rounded-2xl"
                     : "gap-3 rounded-2xl px-4 py-3.5 text-[15px] font-medium w-full",
-                  isActive
-                    ? "bg-[#E5ECF9] text-[#2563eb] shadow-md shadow-blue-500/5 font-semibold"
-                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-950",
-                ].join(" ")
-              }
-            >
-              <span className="text-xl transition-transform duration-200 group-hover:scale-105">
-                {item.icon}
-              </span>
-              {!isCollapsed && <span>{item.name}</span>}
-              {isCollapsed && (
-                <div className="absolute left-full ml-3 px-2.5 py-1.5 bg-slate-950 text-white text-xs font-medium rounded-lg opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity whitespace-nowrap shadow-md z-50">
-                  {item.name}
-                </div>
-              )}
-            </NavLink>
+                  "text-slate-600 hover:bg-red-50 hover:text-red-600",
+                ].join(" ")}
+              >
+                <span className="text-xl transition-transform duration-200 group-hover:scale-105">
+                  {item.icon}
+                </span>
+                {!isCollapsed && <span>{item.name}</span>}
+                {isCollapsed && (
+                  <div className="absolute left-full ml-3 px-2.5 py-1.5 bg-slate-950 text-white text-xs font-medium rounded-lg opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity whitespace-nowrap shadow-md z-50">
+                    {item.name}
+                  </div>
+                )}
+              </button>
+            ) : (
+              <NavLink
+                to={item.path}
+                end={item.path === "/dashboard"}
+                className={({ isActive }) =>
+                  [
+                    "group relative flex items-center transition-all duration-200",
+                    isCollapsed
+                      ? "h-12 w-12 justify-center mx-auto rounded-2xl"
+                      : "gap-3 rounded-2xl px-4 py-3.5 text-[15px] font-medium w-full",
+                    isActive
+                      ? "bg-[#E5ECF9] text-[#2563eb] shadow-md shadow-blue-500/5 font-semibold"
+                      : "text-slate-600 hover:bg-slate-100 hover:text-slate-950",
+                  ].join(" ")
+                }
+              >
+                <span className="text-xl transition-transform duration-200 group-hover:scale-105">
+                  {item.icon}
+                </span>
+                {!isCollapsed && <span>{item.name}</span>}
+                {isCollapsed && (
+                  <div className="absolute left-full ml-3 px-2.5 py-1.5 bg-slate-950 text-white text-xs font-medium rounded-lg opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity whitespace-nowrap shadow-md z-50">
+                    {item.name}
+                  </div>
+                )}
+              </NavLink>
+            )}
           </li>
         ))}
       </ul>

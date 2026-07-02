@@ -1,37 +1,30 @@
-// LessonRow.jsx
-import { Clock, CheckCircle2, Code2, FileType } from "lucide-react";
+import { FileText, Clock, CheckCircle2 } from "lucide-react";
 
 function LessonRow({ lesson, isLast, onClick }) {
+  const isCompleted = lesson.completed;
+
   return (
-    <div
+    <button
       onClick={onClick}
-      className={`flex items-center justify-between px-5 py-3.5 cursor-pointer transition-colors hover:bg-slate-50
+      className={`w-full flex items-center justify-between px-5 py-3.5 text-left
+        hover:bg-slate-50/60 transition-colors
         ${!isLast ? "border-b border-slate-100" : ""}`}
     >
       <div className="flex items-center gap-3">
-        {lesson.type === "code" ? (
-          <Code2 className="h-4 w-4 text-[#3B4A7A]" />
-        ) : (
-          <FileType className="h-4 w-4 text-[#3B4A7A]" />
-        )}
+        <FileText className="h-4 w-4 text-blue-500 shrink-0" />
         <span className="text-sm font-medium text-[#0F1B3D]">
           {lesson.title}
         </span>
       </div>
 
-      <div className="flex items-center gap-4 shrink-0">
-        {lesson.completed && (
-          <span className="hidden sm:flex items-center gap-1 text-xs text-emerald-600">
-            <CheckCircle2 className="h-3.5 w-3.5" />
-            Completed on {lesson.completedDate || "recently"}
-          </span>
+      <div className="flex items-center shrink-0">
+        {isCompleted ? (
+          <CheckCircle2 className="h-[18px] w-[18px] text-blue-500" />
+        ) : (
+          <Clock className="h-[18px] w-[18px] text-slate-300" />
         )}
-        <span className="flex items-center gap-1 text-xs text-slate-400">
-          <Clock className="h-3.5 w-3.5" />
-          {lesson.duration || "—"}
-        </span>
       </div>
-    </div>
+    </button>
   );
 }
 

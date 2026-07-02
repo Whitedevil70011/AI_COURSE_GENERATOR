@@ -16,6 +16,6 @@ router.get("/:lessonId", getLessonById);
 
 // When a POST request hits this URL, run the enrichLessonVideo function
 router.post("/:lessonId/enrich-video", enrichLessonVideo);
-router.put("/:lessonId/complete", markLessonComplete);
+router.post("/:lessonId/complete", markLessonComplete);
 
 module.exports = router;

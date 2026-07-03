@@ -50,17 +50,31 @@ function LessonDetail() {
     return enrichedLesson || lessonData
   }
 
+  async function getLessonById() {
+    try {
+      setLoading(true)
+      const data = await loadLesson()
+      const lessonData = await enrichLessonVideoIfNeeded(data)
+      setLesson(lessonData)
+      setError(null)
+    } catch (err) {
+      setError('Failed to load lesson.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   useEffect(() => {
     let cancelled = false
 
-    async function fetchLesson() {
+    async function fetchData() {
       try {
         setLoading(true)
         const [data, courseData] = await Promise.all([
           loadLesson(),
-          loadCourse()
+          loadCourse(),
         ])
-        
+
         const lessonData = await enrichLessonVideoIfNeeded(data)
 
         if (!cancelled) {
@@ -80,7 +94,7 @@ function LessonDetail() {
       }
     }
 
-    fetchLesson()
+    fetchData()
     return () => {
       cancelled = true
     }
@@ -147,7 +161,11 @@ function LessonDetail() {
 
             {/* Lesson Content Container */}
             <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-              <LessonRenderer lesson={lesson} />
+              <LessonRenderer
+                lesson={lesson}
+                courseId={courseId}
+                onLessonUpdate={getLessonById}
+              />
             </div>
 
           </div>

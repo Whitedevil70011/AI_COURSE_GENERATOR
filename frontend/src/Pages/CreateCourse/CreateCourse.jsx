@@ -34,7 +34,7 @@ function CreateCourse() {
     difficulty: "Beginner",
     duration: "1 Hour",
     video: "Yes",
-    chapters: "5",
+    chapters: "2",
   });
   const {
     category,

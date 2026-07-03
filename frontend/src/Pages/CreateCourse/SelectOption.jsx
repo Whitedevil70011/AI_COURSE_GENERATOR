@@ -62,7 +62,7 @@ function SelectOption() {
         <div className="cc-select-wrapper">
           <select
             className="cc-select"
-            value={userInput?.chapters || "5"}
+            value={userInput?.chapters || "2"}
             onChange={(e) => handleOptionChange("chapters", e.target.value)}
           >
             <option value="1">1</option>

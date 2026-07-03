@@ -4,7 +4,7 @@ import BasicCourseDetails from "./BasicCoursdetails";
 import CourseDetail from "./CourseDetail";
 import ChapterList from "./ChapterList";
 import { Button } from "../../components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Loader2, AlertTriangle } from "lucide-react";
 import Header from "../../_components/Header";
 import Sidebar from "../Dashboard/Sidebar";
 
@@ -62,7 +62,7 @@ function AterCourseGeneration() {
     }
   };
 
-  // Called when the user clicks "Generate Course Content"
+  // Called when the user clicks "Generate Lesson Content"
   const handleGenerateCourse = async () => {
     if (!courseId) {
       alert("Missing courseId");
@@ -127,15 +127,44 @@ function AterCourseGeneration() {
         <aside className={`transition-all duration-300 ${isCollapsed ? "w-20" : "w-72"} shrink-0 border-r border-slate-200/80 bg-white/75 backdrop-blur-xl text-slate-900 shadow-[10px_0_30px_-24px_rgba(15,23,42,0.35)] hidden md:block relative`}>
           <Sidebar isCollapsed={isCollapsed} onToggle={toggleSidebar} />
         </aside>
-        
+
         <main className="flex-1 min-w-0 overflow-y-auto h-[calc(100vh-73px)]">
           <div className="flex w-full max-w-[1100px] flex-col gap-6 px-4 py-8 md:px-8 lg:px-10">
-            
+
             <div className="flex items-center justify-between border-b border-slate-200/60 pb-4">
               <h2 className="text-2xl font-bold text-[#0F1B3D]">Course Curriculum Outline</h2>
               <span className="text-sm font-semibold px-3.5 py-1.5 rounded-full bg-blue-50 text-blue-700 border border-blue-100">
                 Setup Stage
               </span>
+            </div>
+
+            {/* Top-of-page notice — polished, glassmorphic style matching the page theme */}
+            <div className="relative overflow-hidden rounded-2xl border border-amber-200/70 bg-gradient-to-br from-amber-50 via-orange-50/80 to-white shadow-[0_8px_30px_-12px_rgba(217,119,6,0.35)]">
+              {/* decorative glow */}
+              <div className="pointer-events-none absolute -top-10 -right-10 w-40 h-40 rounded-full bg-amber-300/20 blur-3xl" />
+
+              <div className="relative flex items-start gap-4 px-5 py-4">
+                <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-amber-100 border border-amber-200 shrink-0">
+                  <AlertTriangle className="w-5 h-5 text-amber-600" />
+                </div>
+
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-2 mb-1">
+                    <span className="text-sm font-bold text-amber-900">Action Required</span>
+                    <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full bg-amber-500 text-white">
+                      <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                      Empty
+                    </span>
+                  </div>
+                  <p className="text-sm text-amber-800/90 leading-relaxed">
+                    Lesson content hasn't been generated yet. Modules below only show
+                    titles and descriptions — click{" "}
+                    <span className="font-semibold text-amber-900">"Generate Lesson Content"</span>{" "}
+                    at the bottom of this page so the course has real content and is
+                    visible to learners.
+                  </p>
+                </div>
+              </div>
             </div>
 
             <BasicCourseDetails
@@ -150,14 +179,21 @@ function AterCourseGeneration() {
 
             <ChapterList modules={modules} />
 
-            {/* Generate course content button, aligned to the right */}
-            <div className="flex justify-end mt-4">
+            {/* Generate lesson content button, with a "Very Important Notice" label on the left */}
+            <div className="flex items-center justify-between mt-4 flex-wrap gap-3">
+              <div className="flex items-center gap-2 text-red-700 bg-red-50 border border-red-200 px-3.5 py-2 rounded-lg">
+                <AlertTriangle className="w-4 h-4 shrink-0" />
+                <span className="text-xs font-extrabold uppercase tracking-wide">
+                  Content is empty — generate it now
+                </span>
+              </div>
+
               <Button
                 onClick={handleGenerateCourse}
                 disabled={generating}
                 className="bg-[#004c6d] hover:bg-[#003d58] text-white py-3 px-8 rounded-xl font-bold transition-all shadow-md shadow-[#004c6d]/15"
               >
-                {generating ? "Generating..." : "GENERATE COURSE CONTENT"}
+                {generating ? "Generating..." : "GENERATE LESSON CONTENT"}
               </Button>
             </div>
 
@@ -169,7 +205,7 @@ function AterCourseGeneration() {
       {generating && (
         <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#0F1B3D]/80 backdrop-blur-md text-white px-6 animate-fadeIn">
           <div className="flex flex-col items-center max-w-md text-center">
-            
+
             {/* Elegant Spinning Loader Wheel */}
             <div className="relative mb-6">
               <Loader2 className="w-12 h-12 text-blue-500 animate-spin" />
@@ -178,9 +214,9 @@ function AterCourseGeneration() {
             <h3 className="text-xl font-extrabold tracking-tight mb-2.5 text-white">
               Synthesizing Learning Pathway
             </h3>
-            
+
             <p className="text-slate-300 text-sm leading-relaxed mb-6 max-w-sm">
-              Our AI engines are actively compiling your personalized course materials, structuring modular chapter logs, and configuring interactive quiz assessments.
+              Our AI engines are actively compiling your personalized lesson materials, structuring modular chapter logs, and configuring interactive quiz assessments.
             </p>
 
             {/* Subtle Progress Bar */}

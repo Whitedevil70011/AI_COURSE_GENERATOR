@@ -12,6 +12,29 @@ function Dashboard() {
   const [courses, setCourses] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
 
+  const handleDeleteCourse = async (courseId) => {
+    if (!courseId) return;
+
+    const confirmed = window.confirm('Are you sure you want to delete this course?');
+    if (!confirmed) return;
+
+    try {
+      const response = await fetch(`${BASE_URL}/courses/${courseId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const errorBody = await response.json().catch(() => null);
+        throw new Error(errorBody?.message || 'Failed to delete course');
+      }
+
+      setCourses((prevCourses) => prevCourses.filter((course) => course._id !== courseId));
+    } catch (error) {
+      console.error('Error deleting course:', error);
+      alert(error.message || 'Could not delete course.');
+    }
+  };
+
   React.useEffect(() => {
     if (authLoading) return;
 
@@ -83,6 +106,7 @@ function Dashboard() {
                     duration: course.duration || "N/A",
                     difficulty: course.difficulty || "Beginner",
                   }}
+                  onDelete={handleDeleteCourse}
                 />
               ))}
             </div>

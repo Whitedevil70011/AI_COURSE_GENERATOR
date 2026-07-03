@@ -44,7 +44,8 @@ function LessonAudioPlayer({ lessonContent, lessonTitle }) {
       });
 
       if (!res.ok) {
-        throw new Error("Failed to generate audio");
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || "Failed to generate audio");
       }
 
       const audioBlob = await res.blob();
@@ -59,7 +60,7 @@ function LessonAudioPlayer({ lessonContent, lessonTitle }) {
       setPlaying(true);
     } catch (err) {
       console.error("Audio generation failed:", err);
-      setError("Could not generate audio");
+      setError(err.message || "Could not generate audio");
     } finally {
       setLoading(false);
     }

@@ -32,7 +32,25 @@ router.post("/audio", async (req, res) => {
     res.send(audioFile);
 
   } catch (error) {
-    console.log("Something went wrong:", error);
+    console.error("Something went wrong:", error);
+
+    const message =
+      error?.message ||
+      error?.error?.message ||
+      "Failed to generate lesson audio";
+
+    if (
+      message.includes("API key") ||
+      message.includes("PERMISSION_DENIED") ||
+      message.includes("permission") ||
+      error?.status === 403
+    ) {
+      return res.status(502).json({
+        error:
+          "Audio generation is currently unavailable because the Gemini API key is invalid or blocked.",
+      });
+    }
+
     res.status(500).json({ error: "Failed to generate lesson audio" });
   }
 });

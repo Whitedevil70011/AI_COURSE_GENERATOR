@@ -44,19 +44,15 @@ function MCQBlock({ block }) {
     <div className="lr-mcq-card">
       <h3 className="lr-mcq-question">{block.question}</h3>
 
-      {block.options.map((option, index) => {
-        const letter = String.fromCharCode(65 + index); // A, B, C, D...
-        return (
-          <div
-            key={index}
-            onClick={() => handleOptionClick(option)}
-            className={getOptionClasses(option)}
-          >
-            <span className="lr-mcq-option-letter">{letter}</span>
-            <span className="lr-mcq-option-text">{option}</span>
-          </div>
-        );
-      })}
+      {block.options.map((option, index) => (
+        <div
+          key={index}
+          onClick={() => handleOptionClick(option)}
+          className={getOptionClasses(option)}
+        >
+          {option}
+        </div>
+      ))}
 
       {/* Action Buttons */}
       {!isSubmitted && (

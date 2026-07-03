@@ -79,10 +79,10 @@ function LessonAudioPlayer({ lessonContent, lessonTitle }) {
       {/* Label + status */}
       <div className="flex flex-col leading-tight">
         <span className="text-[13px] font-semibold text-indigo-950">
-          Hinglish Audio
+          You can change this lesson as audio
         </span>
         <span className="text-[11px] text-indigo-500">
-          {playing ? "Now playing..." : "Listen to this lesson"}
+          {playing ? "Now playing..." : "Listen in Hinglish"}
         </span>
         {error && (
           <span className="text-[11px] text-red-600 mt-0.5">{error}</span>

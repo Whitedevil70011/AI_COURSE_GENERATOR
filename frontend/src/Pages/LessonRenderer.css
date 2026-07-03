@@ -211,129 +211,197 @@
 
 /* ── MCQ Block Premium CSS (Light Blue Border Theme) ── */
 .lr-mcq-card {
-  border: 1px solid #dbeafe; /* Light blue border */
-  border-radius: 20px;
-  padding: 28px;
+  border: 1px solid rgba(99, 102, 241, 0.15);
+  border-radius: 24px;
+  padding: 32px;
   background: #ffffff;
-  box-shadow: 0 4px 20px -2px rgba(59, 130, 246, 0.03);
-  margin-bottom: 28px;
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.02),
+    0 10px 30px -10px rgba(99, 102, 241, 0.05),
+    0 20px 40px -15px rgba(0, 0, 0, 0.02);
+  margin-bottom: 32px;
+  position: relative;
+  overflow: hidden;
+}
+
+.lr-mcq-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #3b82f6, #6366f1);
 }
 
 .lr-mcq-question {
-  font-size: 17px;
+  font-size: 1.125rem;
   font-weight: 750;
   color: #0f172a;
-  line-height: 1.4;
-  margin: 0 0 20px 0;
+  line-height: 1.5;
+  margin: 0 0 24px 0;
 }
 
 .lr-mcq-option {
-  padding: 14px 18px;
-  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 20px;
+  border-radius: 16px;
   border: 1px solid #e2e8f0;
   background: #f8fafc;
   color: #334155;
-  font-size: 14.5px;
-  font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   margin-bottom: 12px;
 }
 
+.lr-mcq-option-letter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 700;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+}
+
+.lr-mcq-option-text {
+  font-size: 14.5px;
+  font-weight: 550;
+  line-height: 1.4;
+}
+
 .lr-mcq-option:hover {
-  background: #f1f5f9;
+  background: #ffffff;
   border-color: #cbd5e1;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px -10px rgba(15, 23, 42, 0.08);
+}
+
+.lr-mcq-option:hover .lr-mcq-option-letter {
+  border-color: #94a3b8;
+  color: #334155;
 }
 
 .lr-mcq-option.selected {
-  background: #eff6ff;
-  border-color: #3b82f6;
-  color: #1d4ed8;
-  font-weight: 600;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  background: #f0f4ff;
+  border-color: #4f46e5;
+  color: #312e81;
+  box-shadow: 0 4px 18px -6px rgba(79, 70, 229, 0.15);
+}
+
+.lr-mcq-option.selected .lr-mcq-option-letter {
+  background: #4f46e5;
+  border-color: #4f46e5;
+  color: #ffffff;
 }
 
 .lr-mcq-option.correct {
   background: #ecfdf5;
   border-color: #10b981;
-  color: #047857;
-  font-weight: 600;
+  color: #064e3b;
   cursor: default;
   transform: none;
   box-shadow: none;
+}
+
+.lr-mcq-option.correct .lr-mcq-option-letter {
+  background: #10b981;
+  border-color: #10b981;
+  color: #ffffff;
 }
 
 .lr-mcq-option.incorrect {
-  background: #fff5f5;
+  background: #fef2f2;
   border-color: #ef4444;
-  color: #b91c1c;
-  font-weight: 600;
+  color: #7f1d1d;
   cursor: default;
   transform: none;
   box-shadow: none;
 }
 
+.lr-mcq-option.incorrect .lr-mcq-option-letter {
+  background: #ef4444;
+  border-color: #ef4444;
+  color: #ffffff;
+}
+
 .lr-mcq-option.disabled {
-  background: #ffffff;
-  border-color: #e2e8f0;
+  background: rgba(248, 250, 252, 0.5);
+  border-color: #f1f5f9;
   color: #94a3b8;
   cursor: default;
   transform: none;
   box-shadow: none;
 }
 
+.lr-mcq-option.disabled .lr-mcq-option-letter {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  color: #cbd5e1;
+}
+
 .lr-mcq-btn-submit {
-  padding: 10px 24px;
-  border-radius: 10px;
-  font-size: 13.5px;
+  padding: 12px 28px;
+  border-radius: 14px;
+  font-size: 14px;
   font-weight: 700;
   color: #ffffff;
-  background: #3b82f6;
+  background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
   border: none;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
-  transition: all 0.2s;
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .lr-mcq-btn-submit:hover:not(:disabled) {
-  background: #2563eb;
   transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(79, 70, 229, 0.35);
 }
 
 .lr-mcq-btn-submit:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
   box-shadow: none;
 }
 
 .lr-mcq-btn-clear {
-  padding: 10px 24px;
-  border-radius: 10px;
-  font-size: 13.5px;
+  padding: 12px 28px;
+  border-radius: 14px;
+  font-size: 14px;
   font-weight: 600;
   color: #475569;
-  background: #f1f5f9;
+  background: #ffffff;
   border: 1px solid #e2e8f0;
   cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
   transition: all 0.2s;
 }
 
 .lr-mcq-btn-clear:hover {
-  background: #e2e8f0;
+  background: #f8fafc;
+  border-color: #cbd5e1;
 }
 
 .lr-mcq-result {
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 1px solid #f1f5f9;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px dashed #e2e8f0;
+  animation: cc-fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .lr-mcq-result-title {
-  font-size: 14.5px;
+  font-size: 15px;
   font-weight: 750;
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .lr-mcq-explanation {
@@ -342,9 +410,21 @@
   line-height: 1.6;
   margin: 0;
   background: #f8fafc;
-  padding: 14px 18px;
-  border-radius: 10px;
+  padding: 16px 20px;
+  border-radius: 14px;
   border: 1px solid #f1f5f9;
+  position: relative;
+}
+
+.lr-mcq-explanation::before {
+  content: "Explanation";
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #94a3b8;
+  display: block;
+  margin-bottom: 4px;
 }
 
 /* Override Code Blocks with Light Blue Border theme also */

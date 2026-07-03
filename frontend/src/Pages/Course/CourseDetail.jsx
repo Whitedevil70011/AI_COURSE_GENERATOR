@@ -12,19 +12,18 @@ import AskAiSidebar from "../Askaisidebar.jsx";
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 function CourseDetail() {
-  // Get the courseId from the URL, e.g. /courses/123 -> courseId = "123"
+
   const { courseId } = useParams();
   const navigate = useNavigate();
 
   // ---- State variables ----
-  const [course, setCourse] = useState(null);       // course info (title, description, etc.)
-  const [modules, setModules] = useState([]);        // list of chapters/modules
+  const [course, setCourse] = useState(null);       
+  const [modules, setModules] = useState([]);     
   const [loading, setLoading] = useState(true);       // true while fetching
   const [error, setError] = useState("");             // error message, if any
   const [activeTab, setActiveTab] = useState("chapters"); // which tab is selected
   const [openTopics, setOpenTopics] = useState({});   // which chapters are expanded
 
-  // ---- Step 1: Fetch the course when the page loads ----
   useEffect(() => {
     fetchCourseData();
   }, [courseId]);
@@ -44,8 +43,7 @@ function CourseDetail() {
 
       const data = await response.json();
 
-      // Some APIs return { course: {...} }, others return the course directly.
-      // Handle both cases simply:
+    
       let courseData = data;
       if (data.course) {
         courseData = data.course;
@@ -53,7 +51,7 @@ function CourseDetail() {
 
       setCourse(courseData);
 
-      // Modules might come as data.modules or courseData.modules
+
       if (Array.isArray(data.modules)) {
         setModules(data.modules);
       } else if (Array.isArray(courseData.modules)) {
@@ -68,7 +66,7 @@ function CourseDetail() {
     setLoading(false);
   }
 
-  // ---- Step 2: Open the first chapter automatically once modules load ----
+
   useEffect(() => {
     const firstChapterOpen = {};
     if (modules.length > 0) {
@@ -77,7 +75,7 @@ function CourseDetail() {
     setOpenTopics(firstChapterOpen);
   }, [modules]);
 
-  // ---- Helper functions ----
+
   function toggleTopic(index) {
     const updated = { ...openTopics };
     updated[index] = !updated[index];
@@ -89,7 +87,7 @@ function CourseDetail() {
   navigate(`/courses/${courseId}/lesson/${lessonId}`);
   }
 
-  // Count total lessons across all modules
+
   function getTotalLessons() {
     let total = 0;
     for (let i = 0; i < modules.length; i++) {
@@ -122,7 +120,7 @@ function CourseDetail() {
     );
   }
 
-  // ---- Error state ----
+
   if (error || !course) {
     return (
       <div className="min-h-screen bg-[#F4F7FC] flex items-center justify-center">

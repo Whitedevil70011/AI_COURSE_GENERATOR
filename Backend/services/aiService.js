@@ -51,7 +51,6 @@ Include Videos: ${video}
 Number of Chapters: ${chapters}
 `;
 
-  // Switch provider via AI_PROVIDER env var: "groq" | "gemini" (default: groq)
   const provider = (process.env.AI_PROVIDER || 'groq').toLowerCase();
   console.log(`Using AI provider: ${provider}`);
 

@@ -1,9 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useAuth0 } from '@auth0/auth0-react'
 
-// Auth0 gives you `user` and `logout` directly — no need to pass a user prop.
-// user shape from Auth0: { name, nickname, email, picture, ... }
-// Wrap your app in <Auth0Provider> (see index.js snippet below) for this to work.
 function Header() {
   const { user, isAuthenticated, logout } = useAuth0()
   const [open, setOpen] = useState(false)

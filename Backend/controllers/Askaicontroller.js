@@ -1,5 +1,3 @@
-// controllers/askAiController.js
-// Handles req/res. Delegates the actual AI call to askAiService.
 
 const askAiService = require("../services/askAiService");
 
@@ -13,7 +11,6 @@ async function askAi(req, res) {
   } catch (error) {
     console.error("askAi controller error:", error.message);
 
-    // Bad input from the client vs. something going wrong upstream
     if (error.message.includes("history must be")) {
       return res.status(400).json({ error: error.message });
     }

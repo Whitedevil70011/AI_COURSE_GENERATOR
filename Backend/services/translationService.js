@@ -6,7 +6,7 @@ const { GoogleGenAI } = require("@google/genai");
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 async function translateToHinglish(englishText) {
-  // This is the instruction we give to Gemini
+
   const instructions = `
     Translate the following English lesson text into Hinglish 
     (Hindi + English mixed, written in English letters, not Hindi script).
@@ -19,13 +19,12 @@ async function translateToHinglish(englishText) {
     Only give me the Hinglish translation. Nothing else.
   `;
 
-  // Send the instruction to Gemini and wait for the response
+
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash",
     contents: instructions,
   });
 
-  // Get just the text part of the response
   const hinglishText = response.text.trim();
 
   return hinglishText;

@@ -1,6 +1,3 @@
-// services/askAiService.js
-// Talks to OpenRouter. Knows nothing about Express (no req/res here) —
-// that separation is what makes this easy to test and reuse.
 
 const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 
@@ -20,7 +17,7 @@ function buildSystemPrompt(lessonTitle, lessonContent) {
 }
 
 /**
- * Ask OpenRouter for a chat reply.
+
  * @param {Object} params
  * @param {string} params.lessonTitle
  * @param {string} params.lessonContent

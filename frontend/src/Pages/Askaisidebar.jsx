@@ -1,11 +1,7 @@
-// AskAiSidebar.jsx
-// A simple "Ask AI" chat panel. Click the round button to open it.
 
 import React, { useState, useRef, useEffect } from "react";
 import { Bot, X, ArrowRight } from "lucide-react";
 
-// Use a relative path by default so this works wherever the app is deployed.
-// Override with a Vite env var when you actually need a different host.
 const BACKEND_URL =
   import.meta.env.VITE_ASK_AI_URL ||
   (import.meta.env.VITE_API_BASE_URL

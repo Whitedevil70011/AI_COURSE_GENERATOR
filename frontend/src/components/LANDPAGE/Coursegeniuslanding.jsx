@@ -21,13 +21,6 @@ import {
   Users,
 } from "lucide-react";
 
-/* ---------------------------------------------------------------
-   CourseGenius — marketing landing page
-   Palette: deep indigo → violet → blue hero (matches product's
-   dashboard hero), teal call-to-action accent (matches the
-   product's "Start Course" button), warm off-white canvas.
-   Display face: Sora. Body: Inter. Utility/labels: JetBrains Mono.
-------------------------------------------------------------------*/
 
 const BUILD_STEPS = [
   { label: "Course title", value: "Low-Level Design (LLD) Mastery", kind: "type" },

@@ -10,7 +10,7 @@ const getUserInfo = async (accessToken) => {
   if (!response.ok) throw new Error('Failed to fetch user info from Auth0');
 
   const user = await response.json();
-  // Returns: { sub, name, email, picture }
+
   return user;
 };
 

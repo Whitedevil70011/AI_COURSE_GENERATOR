@@ -1,8 +1,4 @@
-/* ═══════════════════════════════════════════════════════════════════
-   Create Course — High-End SaaS UI Styles
-   ═══════════════════════════════════════════════════════════════════ */
 
-/* ── Wrapper ── */
 .create-course-wrapper {
   display: flex;
   flex-direction: column;

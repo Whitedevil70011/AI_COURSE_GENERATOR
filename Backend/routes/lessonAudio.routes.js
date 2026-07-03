@@ -1,4 +1,3 @@
-// This file's job: create the API endpoint the frontend will call
 
 const express = require("express");
 const router = express.Router();

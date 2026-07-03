@@ -1,6 +1,4 @@
-// lessonRoutes.js
-// This file ONLY defines URLs and connects them to controller functions.
-// No actual logic should live here.
+
 
 const express = require("express");
 const router = express.Router();

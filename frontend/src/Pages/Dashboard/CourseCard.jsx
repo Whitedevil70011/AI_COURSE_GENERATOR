@@ -77,14 +77,7 @@ function injectGeminiStyles() {
 }
 
 function CourseCard({ course, onDelete }) {
-  // course.title        -> course name
-  // course.description  -> short description
-  // course.category     -> e.g. "Programming"
-  // course.topic        -> e.g. "make web dev in mern"
-  // course.difficulty   -> e.g. "Beginner"
-  // course.duration     -> e.g. "1 Hour"
-  // course.thumbnail    -> relative path like "/uploads/xxx.png" (may be missing/null)
-
+  
   injectGeminiStyles();
 
   const navigate = useNavigate();
@@ -96,11 +89,11 @@ function CourseCard({ course, onDelete }) {
   const difficultyStyle =
     difficultyStyles[course.difficulty] || "bg-slate-100 text-slate-600";
 
-  // Central place that decides where "Get Started" goes
+
   const goToCourse = () => navigate(`/courses/${course._id}`);
 
-  // Edit goes to the singular "/course/:id" route
-  // (e.g. http://localhost:5173/course/6a44d1f5e81c5ff7be74d3f0)
+
+
   const goToEditCourse = () => navigate(`/course/${course._id}`);
 
   return (

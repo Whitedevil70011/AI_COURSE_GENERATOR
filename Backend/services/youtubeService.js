@@ -6,11 +6,11 @@ async function searchYoutubeVideo(query) {
       "https://www.googleapis.com/youtube/v3/search",
       {
         params: {
-          part: "snippet", // we want video details back
-          q: query, // the search text
-          type: "video", // only videos, not channels/playlists
-          maxResults: 1, // we only need the top result
-          key: process.env.YOUTUBE_API_KEY, // your secret key from .env
+          part: "snippet", 
+          q: query,
+          type: "video", 
+          maxResults: 1,
+          key: process.env.YOUTUBE_API_KEY, 
         },
       },
     );

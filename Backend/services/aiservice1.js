@@ -4,6 +4,86 @@ const { generateWithGemini } = require('./providers/geminiService');
 // Pause for a given number of milliseconds
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+const buildFallbackLessonLayout = (courseTitle, moduleTitle, lessonTitle) => {
+  const topic = [lessonTitle, moduleTitle, courseTitle].filter(Boolean).join(' ');
+  const title = lessonTitle || 'Lesson Overview';
+  const videoSearchQuery = `${lessonTitle || topic} explained simply`;
+
+  return {
+    title,
+    objectives: [
+      `Understand the main concepts behind ${lessonTitle || topic}`,
+      `Identify the key terms and ideas related to ${lessonTitle || topic}`,
+      `Apply the lesson ideas to a simple example or practice task`,
+    ],
+    videoSearchQuery,
+    content: [
+      { type: 'heading', text: `Introduction to ${title}` },
+      {
+        type: 'paragraph',
+        text: `This lesson introduces ${title} in a practical and easy-to-follow way. It focuses on the essential ideas you should understand before moving on.`,
+      },
+      {
+        type: 'paragraph',
+        text: `The main goal is to make ${title} clearer by breaking it into simple concepts, examples, and key takeaways that you can review later.`,
+      },
+      {
+        type: 'paragraph',
+        text: `As you study this lesson, try to connect the new ideas to what you already know and note any questions that come up for further review.`,
+      },
+      { type: 'video', query: videoSearchQuery },
+      {
+        type: 'mcq',
+        question: `What is the main purpose of this lesson on ${title}?`,
+        options: [
+          'To explain the core idea in a simple way',
+          'To replace all prior study materials',
+          'To avoid practice and review',
+          'To skip the lesson summary',
+        ],
+        correctAnswer: 'To explain the core idea in a simple way',
+        explanation: 'The lesson is designed to introduce the topic clearly and make it easier to understand.',
+      },
+      {
+        type: 'mcq',
+        question: `Which approach works best when learning ${title}?`,
+        options: [
+          'Break the topic into simple parts and review it step by step',
+          'Ignore examples and only read once',
+          'Memorize without understanding',
+          'Skip the summary and move on',
+        ],
+        correctAnswer: 'Break the topic into simple parts and review it step by step',
+        explanation: 'A structured approach helps learners retain information better and understand the topic more clearly.',
+      },
+      {
+        type: 'mcq',
+        question: `Why is it helpful to reflect on what you learned in this lesson?`,
+        options: [
+          'It reinforces your understanding and highlights gaps',
+          'It makes the lesson longer without value',
+          'It removes the need for practice',
+          'It prevents further learning',
+        ],
+        correctAnswer: 'It reinforces your understanding and highlights gaps',
+        explanation: 'Reflection helps learners confirm what they understood and identify areas that still need review.',
+      },
+      {
+        type: 'mcq',
+        question: `What should you do after finishing this lesson?`,
+        options: [
+          'Review the key ideas and try a simple practice activity',
+          'Delete your notes and move on',
+          'Stop studying the topic',
+          'Ignore the examples',
+        ],
+        correctAnswer: 'Review the key ideas and try a simple practice activity',
+        explanation: 'Reviewing and practicing strengthens understanding and helps the lesson stick.',
+      },
+    ],
+  };
+};
+
 const generateLessonLayout = async (courseTitle, moduleTitle, lessonTitle) => {
   const prompt = `
 Generate a detailed lesson layout based on the context below.
@@ -57,42 +137,47 @@ Rules:
 
   let responseText = '';
 
-  if (provider === 'groq') {
-    try {
-      responseText = await generateWithGroq(prompt);
-    } catch (error) {
-      const isRateLimit =
-        error?.message?.includes('rate_limit_exceeded') ||
-        error?.message?.includes('Groq API error 429');
+  try {
+    if (provider === 'groq') {
+      try {
+        responseText = await generateWithGroq(prompt);
+      } catch (error) {
+        const isRateLimit =
+          error?.message?.includes('rate_limit_exceeded') ||
+          error?.message?.includes('Groq API error 429');
 
-      if (!isRateLimit) {
-        throw error;
-      }
+        if (!isRateLimit) {
+          throw error;
+        }
 
-      // Retry up to 3 times with increasing wait time
-      let success = false;
+        // Retry up to 3 times with increasing wait time
+        let success = false;
 
-      for (let attempt = 1; attempt <= 3; attempt++) {
-        console.log(`Groq rate limited. Waiting ${attempt * 10}s before retry ${attempt}...`);
-        await wait(attempt * 10000); // 10s, 20s, 30s
+        for (let attempt = 1; attempt <= 3; attempt++) {
+          console.log(`Groq rate limited. Waiting ${attempt * 10}s before retry ${attempt}...`);
+          await wait(attempt * 10000); // 10s, 20s, 30s
 
-        try {
-          responseText = await generateWithGroq(prompt);
-          success = true;
-          break;
-        } catch (retryError) {
-          console.error(`Retry ${attempt} failed:`, retryError.message);
+          try {
+            responseText = await generateWithGroq(prompt);
+            success = true;
+            break;
+          } catch (retryError) {
+            console.error(`Retry ${attempt} failed:`, retryError.message);
+          }
+        }
+
+        if (!success) {
+          // Groq failed even after retries — fall back to Gemini
+          console.log('Groq failed after retries, falling back to Gemini...');
+          responseText = await generateWithGemini(prompt);
         }
       }
-
-      if (!success) {
-        // Groq failed even after retries — fall back to Gemini
-        console.log('Groq failed after retries, falling back to Gemini...');
-        responseText = await generateWithGemini(prompt);
-      }
+    } else {
+      responseText = await generateWithGemini(prompt);
     }
-  } else {
-    responseText = await generateWithGemini(prompt);
+  } catch (error) {
+    console.warn('AI lesson generation failed, using built-in fallback content:', error.message);
+    return buildFallbackLessonLayout(courseTitle, moduleTitle, lessonTitle);
   }
 
   // Strip markdown code fences if present
